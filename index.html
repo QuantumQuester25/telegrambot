@@ -98,20 +98,21 @@
   </div>
 
   <script>
+    // Tell Telegram WebApp you're ready
+    Telegram.WebApp.ready();
+
     function handleRegistration() {
-      // Open BloFin registration in a new tab
-      window.open("https://blofin.com/signup", "_blank");
+      // ✅ Safely open BloFin in Telegram Mini App
+      Telegram.WebApp.openLink("https://blofin.com/signup");
 
       // Enable the Verify button
       document.getElementById("verifyBtn").disabled = false;
     }
 
     function handleVerify() {
-      // Send message back to Telegram Mini App
+      // Send data back to Telegram bot
       Telegram.WebApp.sendData(JSON.stringify({ action: "verify_clicked" }));
     }
-
-    Telegram.WebApp.ready(); // Let Telegram know it's ready
   </script>
 </body>
 </html>
