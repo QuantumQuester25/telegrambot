@@ -3,65 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register with BloFin</title>
+  <title>Sign Up - BloFin</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 16px;
-      background: url('https://i.ibb.co/mWwT9rH/Untitled-design-7.png') no-repeat center center fixed;
-      background-size: cover;
+      padding: 0;
+      background-color: #07162a;
       color: #fff;
     }
 
     .container {
       max-width: 500px;
       margin: auto;
-      background: rgba(0, 16, 40, 0.96); /* Dark navy blue */
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
-    h1 {
-      text-align: center;
+    .section {
+      background-color: #0b1f3a;
+      padding: 16px;
+      border-radius: 12px;
       margin-bottom: 20px;
-      font-size: 20px;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #4ea0ff;
+      margin-bottom: 10px;
     }
 
     p {
-      text-align: center;
       font-size: 14px;
-      margin-bottom: 20px;
+      margin: 0 0 10px;
     }
 
-    button {
+    .video {
       width: 100%;
-      padding: 14px;
-      background: #2e90fa;
+      border-radius: 12px;
+      margin: 10px 0;
+    }
+
+    .signup-button {
+      background-color: #002d7a;
+      color: #4ea0ff;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .signup-button:hover {
+      background-color: #0040aa;
+    }
+
+    .verify-button {
+      background-color: #1c64f2;
       color: white;
-      border: none;
+      padding: 12px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 16px;
+      text-align: center;
       cursor: pointer;
-      margin-top: 20px;
+      border: none;
+      width: 100%;
+      margin-top: 10px;
     }
 
-    button:hover {
-      background-color: #1d70d4;
+    .emoji {
+      margin-right: 6px;
+    }
+
+    a {
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Register with BloFin</h1>
-    <p>Tap the button below to complete your registration.</p>
 
-    <!-- Button to open BloFin in system browser -->
-    <button onclick="Telegram.WebApp.openLink('https://blofin.com/invite/shabak?redirect=')">
-      Sign Up for BloFin
-    </button>
+    <div class="section">
+      <h2>📈 Trade With Me On BloFin</h2>
+      <p><strong>First 1,000</strong> sign ups get gifted <strong>FREE $30</strong> when you deposit into your futures account!</p>
+    </div>
+
+    <div class="section">
+      <h2>How To Sign Up With Blofin</h2>
+      <iframe class="video" src="https://www.loom.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="section">
+      <h2>Sign Up For BloFin</h2>
+      <p>Sign up below to find your UID (user ID) because you'll need it on the next step to verify:</p>
+      <a class="signup-button" href="https://blofin.com/invite/shabak?redirect=" target="_blank">
+        👉 Sign Up for Blofin
+      </a>
+    </div>
+
+    <div class="section">
+      <p>Already Signed Up? Click Below 👇</p>
+      <button class="verify-button" onclick="Telegram.WebApp.sendData(JSON.stringify({ action: 'verify_clicked' }))">
+        Verify
+      </button>
+    </div>
+
   </div>
 
   <script>
