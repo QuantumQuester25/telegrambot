@@ -18,21 +18,35 @@
     .container {
       max-width: 500px;
       margin: auto;
-      background: rgba(0, 16, 40, 0.96);
+      background: rgba(0, 16, 40, 0.96); /* Dark navy blue */
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
-    h1, p {
+    h1 {
+      font-size: 20px;
       text-align: center;
+      margin-bottom: 10px;
     }
 
-    .step {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 12px;
-      border-radius: 10px;
-      margin: 10px 0;
+    p {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      margin: 16px 0;
+      border: none;
+    }
+
+    .step-title {
+      font-weight: bold;
+      margin: 12px 0 4px;
     }
 
     button {
@@ -45,80 +59,38 @@
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-    }
-
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
-
-    iframe {
-      width: 100%;
-      height: 200px;
-      border-radius: 10px;
-      margin-top: 10px;
-      border: none;
-    }
-
-    .verify-section {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 14px;
-      color: #ccc;
+      margin-top: 16px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📈 Trade With Me On BloFin</h1>
-    <p><strong>First 1,000</strong> sign ups get gifted <strong>FREE $30</strong> when you deposit into your futures account!</p>
+    <h1>Gem Hunters Lite Onboarding</h1>
+    <p>Watch the tutorial and follow the steps below to get started.</p>
 
-    <div class="step">
-      <h3>Step 1: Watch How To Sign Up</h3>
-      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
-    </div>
+    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
 
-    <div class="step">
-      <h3>Step 2: Sign Up On BloFin</h3>
-      <p>Click the button below to register and get your UID (User ID).</p>
-      <button onclick="handleRegistration()">Continue to Registration</button>
-    </div>
+    <div class="step-title">Step 1</div>
+    <div>Register with BloFin</div>
 
-    <div class="verify-section">
-      <p>Already signed up? Click below 👇</p>
-      <button id="verifyBtn" onclick="handleVerify()" disabled>✅ Verify</button>
-    </div>
+    <div class="step-title">Step 2</div>
+    <div>Register with Photon</div>
 
-    <div class="footer">@GemHuntersFree_Bot</div>
+    <div class="step-title">Step 3</div>
+    <div>Join our Telegram Group</div>
+
+    <div class="step-title">Step 4</div>
+    <div>Click Register to continue</div>
+
+    <button onclick="goToRegister()">Register</button>
   </div>
 
   <script>
-    window.addEventListener("load", () => {
-      if (typeof Telegram === "undefined" || !Telegram.WebApp) {
-        alert("Telegram WebApp not initialized. Please open from Telegram.");
-        return;
-      }
-
-      Telegram.WebApp.ready();
-    });
-
-    function handleRegistration() {
-      window.open("https://blofin.com/signup", "_blank");
-      document.getElementById("verifyBtn").disabled = false;
+    function goToRegister() {
+      window.location.href = "register.html"; // Go to next screen
     }
 
-    function handleVerify() {
-      if (typeof Telegram !== "undefined" && Telegram.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify({ action: "verify_clicked" }));
-      } else {
-        alert("This must be opened from inside Telegram.");
-      }
-    }
+    Telegram.WebApp.ready();
   </script>
 </body>
 </html>
