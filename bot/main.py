@@ -9,7 +9,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton(
                 "🚀 Launch App",
-                web_app = WebAppInfo(url="https://telegrambot-kappa-one.vercel.app")
+                web_app = WebAppInfo(url="https://telegrambot2797.vercel.app")
                                )
                                ]
     ]
