@@ -18,105 +18,90 @@
     .container {
       max-width: 500px;
       margin: auto;
-      background: #0a1d3c; /* Navy dark blue */
+      background: rgba(0, 16, 40, 0.96); /* dark blue */
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      color: #ffffff;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
-    h1 {
-      font-size: 20px;
+    h1, p, .step-title {
       text-align: center;
-      margin-bottom: 10px;
-    }
-
-    p {
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 200px;
-      border-radius: 12px;
-      margin: 16px 0;
-      border: none;
     }
 
     .step {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.05);
       padding: 12px;
       border-radius: 10px;
       margin: 10px 0;
     }
 
-    .step-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
     button {
       width: 100%;
       padding: 12px;
-      background: #3390ec;
+      background: #2e90fa;
       color: white;
       border: none;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 16px;
+      margin-top: 10px;
     }
 
-    button:hover {
-      background: #287dd0;
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
     }
 
-    a {
-      color: #66bfff;
-      text-decoration: underline;
+    .verify-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .verify-btn {
+      background: #1e4ed9;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Gem Hunters Lite Onboarding</h1>
-    <p>Watch the tutorial and follow the steps below to get started.</p>
-
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+    <h1>🎯 Trade With Me On BloFin</h1>
+    <p><strong>First 1,000</strong> sign ups get gifted <strong>FREE $30</strong> when you deposit into your futures account!</p>
 
     <div class="step">
-      <div class="step-title">Step 1</div>
-      <div>Register with BloFin</div>
+      <div class="step-title">Step 1: Watch How to Sign Up</div>
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
     </div>
 
     <div class="step">
-      <div class="step-title">Step 2</div>
-      <div>Register with Photon</div>
+      <div class="step-title">Step 2: Sign Up on BloFin</div>
+      <p>Click below to register and get your UID (User ID) for verification.</p>
+      <button onclick="openSignup()">Continue to Registration</button>
     </div>
 
-    <div class="step">
-      <div class="step-title">Step 3</div>
-      <div>Check your registration email</div>
+    <div class="verify-section">
+      <p>✅ Already Signed Up? Click Below 👇</p>
+      <button id="verifyBtn" class="verify-btn" disabled onclick="verify()">Verify</button>
     </div>
 
-    <div class="step">
-      <div class="step-title">Step 4</div>
-      <div>Join the official <a href="https://t.me/YOUR_TELEGRAM_GROUP" target="_blank">Telegram Group</a></div>
-    </div>
-
-    <button onclick="submitData()">Continue to Registration</button>
+    <p style="text-align:center; margin-top: 20px;">@GemHuntersFree_Bot</p>
   </div>
 
   <script>
-    function submitData() {
-      Telegram.WebApp.sendData("registration_started");
+    function openSignup() {
+      // Open in new tab
+      window.open("https://blofin.com/signup", "_blank");
+
+      // Enable verify button
+      document.getElementById("verifyBtn").disabled = false;
     }
 
-    Telegram.WebApp.ready(); // Notify Telegram you're ready
+    function verify() {
+      // Send verify signal back to Telegram bot
+      Telegram.WebApp.sendData(JSON.stringify({ action: "verify" }));
+    }
+
+    Telegram.WebApp.ready(); // Notify Telegram it's ready
   </script>
 </body>
 </html>
