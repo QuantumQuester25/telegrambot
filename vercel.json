@@ -1,6 +1,13 @@
 {
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/webapp/index.html" },
-    { "source": "/register", "destination": "/webapp/register.html" }
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/register.html"
+    }
   ]
 }
