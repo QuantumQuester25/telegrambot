@@ -101,11 +101,12 @@
     Telegram.WebApp.ready();
 
     function handleRegistration() {
-      // ✅ Try openTelegramLink (better compatibility)
-      Telegram.WebApp.openTelegramLink("https://blofin.com/signup");
-
-      // ✅ Enable Verify Button
-      document.getElementById("verifyBtn").disabled = false;
+      try {
+        Telegram.WebApp.openTelegramLink("https://blofin.com/signup");
+        document.getElementById("verifyBtn").disabled = false;
+      } catch (e) {
+        Telegram.WebApp.showAlert("Couldn't open the link. Try manually.");
+      }
     }
 
     function handleVerify() {
