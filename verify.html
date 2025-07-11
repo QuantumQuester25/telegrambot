@@ -1,39 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verify UID</title>
+  <title>אימות UID</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
+      background: url('https://i.ibb.co/mWwT9rH/Untitled-design-7.png') no-repeat center center fixed;
+      background-size: cover;
       text-align: center;
       padding: 2rem;
+      margin: 0;
+      color: white;
     }
+
     .container {
-      background: white;
-      border-radius: 12px;
+      background: rgba(10, 20, 40, 0.95); /* dark navy */
+      border-radius: 16px;
       max-width: 400px;
       margin: auto;
       padding: 2rem;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
     input {
-      padding: 0.5rem;
+      padding: 0.7rem;
       width: 80%;
       margin-bottom: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
     }
+
     button {
-      padding: 0.6rem 1.2rem;
-      background: #4CAF50;
+      padding: 0.7rem 1.4rem;
+      background: #00b894;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
     }
+
     #status {
       margin-top: 1rem;
       font-weight: bold;
@@ -54,12 +71,15 @@
     async function verifyUID() {
       const uid = document.getElementById("uid").value;
       const statusDiv = document.getElementById("status");
+
       if (!uid) {
         statusDiv.textContent = "❌ נא להזין UID תקין";
+        statusDiv.style.color = "red";
         return;
       }
 
       statusDiv.textContent = "בודק UID שלך... ⏳";
+      statusDiv.style.color = "white";
 
       const apiKey = "9c79690a9dc84a798be00d2d05b31e8d";
       const apiSecret = "7174cb58836543bca990e1e94325a93c";
@@ -78,18 +98,17 @@
 
         const data = await response.json();
         const invitees = data.data || [];
-
         const match = invitees.find(user => user.userId == uid);
 
         if (match) {
           statusDiv.textContent = "✅ אומת בהצלחה! אתה מוזמן להמשיך.";
-          statusDiv.style.color = "green";
+          statusDiv.style.color = "lightgreen";
         } else {
           statusDiv.textContent = "❌ המשתמש לא נמצא ברשימת ההזמנות שלך.";
           statusDiv.style.color = "red";
         }
       } catch (err) {
-        statusDiv.textContent = "שגיאה בבדיקת UID. נסה שוב מאוחר יותר.";
+        statusDiv.textContent = "⚠️ שגיאה בבדיקת UID. נסה שוב מאוחר יותר.";
         statusDiv.style.color = "red";
         console.error(err);
       }
