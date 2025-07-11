@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify UID</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+      padding: 2rem;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 0.5rem;
+      width: 80%;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 אימות UID</h2>
+    <p>הזן את מזהה BloFin שלך (UID)</p>
+    <input type="text" id="uid" placeholder="הכנס UID כאן" />
+    <br />
+    <button onclick="verifyUID()">אמת עכשיו</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    async function verifyUID() {
+      const uid = document.getElementById("uid").value;
+      const statusDiv = document.getElementById("status");
+      if (!uid) {
+        statusDiv.textContent = "❌ נא להזין UID תקין";
+        return;
+      }
+
+      statusDiv.textContent = "בודק UID שלך... ⏳";
+
+      const apiKey = "9c79690a9dc84a798be00d2d05b31e8d";
+      const apiSecret = "7174cb58836543bca990e1e94325a93c";
+      const passphrase = "Shabak123";
+
+      try {
+        const response = await fetch("https://api.blofin.com/api/v1/aliate/invitees", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "BF-API-KEY": apiKey,
+            "BF-API-SECRET": apiSecret,
+            "BF-API-PASSPHRASE": passphrase
+          }
+        });
+
+        const data = await response.json();
+        const invitees = data.data || [];
+
+        const match = invitees.find(user => user.userId == uid);
+
+        if (match) {
+          statusDiv.textContent = "✅ אומת בהצלחה! אתה מוזמן להמשיך.";
+          statusDiv.style.color = "green";
+        } else {
+          statusDiv.textContent = "❌ המשתמש לא נמצא ברשימת ההזמנות שלך.";
+          statusDiv.style.color = "red";
+        }
+      } catch (err) {
+        statusDiv.textContent = "שגיאה בבדיקת UID. נסה שוב מאוחר יותר.";
+        statusDiv.style.color = "red";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
