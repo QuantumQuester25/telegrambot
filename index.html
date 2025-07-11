@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gem Hunters Onboarding</title>
 
+  <!-- ✅ Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -76,7 +79,7 @@
 <body>
   <div class="container">
     <h1>📈 Trade With Me On BloFin</h1>
-    <p><strong>First 1,000</strong> signups get <strong>FREE $30</strong> when you deposit into your futures account!</p>
+    <p><strong>First 1,000</strong> sign ups get gifted <strong>FREE $30</strong> when you deposit into your futures account!</p>
 
     <div class="step">
       <h3>Step 1: Watch How To Sign Up</h3>
@@ -91,27 +94,30 @@
 
     <div class="verify-section">
       <p>Already signed up? Click below 👇</p>
-      <button id="verifyBtn" onclick="handleVerify()" disabled>✅ Verify</button>
+      <button id="verifyBtn" onclick="handleVerify()" disabled>Verify</button>
     </div>
 
     <div class="footer">@GemHuntersFree_Bot</div>
   </div>
 
   <script>
-    function handleRegistration() {
-      // Open BloFin signup in Telegram browser tab
-      Telegram.WebApp.openTelegramLink("https://blofin.com/signup");
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof Telegram !== "undefined" && Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        console.log("✅ Telegram WebApp is ready");
 
-      // Enable Verify button
-      document.getElementById("verifyBtn").disabled = false;
-    }
+        window.handleRegistration = function () {
+          Telegram.WebApp.openTelegramLink("https://blofin.com/signup");
+          document.getElementById("verifyBtn").disabled = false;
+        };
 
-    function handleVerify() {
-      // Send signal back to Telegram bot
-      Telegram.WebApp.sendData(JSON.stringify({ action: "verify_clicked" }));
-    }
-
-    Telegram.WebApp.ready(); // Let Telegram know Mini App is ready
+        window.handleVerify = function () {
+          Telegram.WebApp.sendData(JSON.stringify({ action: "verify_clicked" }));
+        };
+      } else {
+        console.warn("❌ Telegram.WebApp not available. Are you running this inside Telegram?");
+      }
+    });
   </script>
 </body>
 </html>
