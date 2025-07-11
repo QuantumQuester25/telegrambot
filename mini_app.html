@@ -3,50 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Telegram Mini App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Telegram WebApp</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      transition: background 0.3s ease;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      color: #444;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-r from-gray-900 to-black text-white min-h-screen flex items-center justify-center p-4">
+<body>
+  <h2 id="user">Loading...</h2>
+  <p>This is your Telegram Mini App running inside the Telegram app.</p>
 
-  <div class="w-full max-w-xl bg-gray-800 rounded-2xl shadow-2xl p-6 space-y-6">
-    <h1 class="text-3xl font-bold text-center text-green-400">🚀 Welcome to Gem Hunt</h1>
-    <p class="text-center text-sm text-gray-300">Complete the steps below to unlock premium access!</p>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();  // Make it full-screen
 
-    <!-- Step 1: Contact Info -->
-    <div class="space-y-2">
-      <h2 class="text-xl font-semibold text-yellow-400">1️⃣ Contact Information</h2>
-      <input type="text" placeholder="Full Name" class="w-full px-4 py-2 rounded bg-gray-700 placeholder-gray-400 focus:outline-none" />
-      <input type="email" placeholder="Email Address" class="w-full px-4 py-2 rounded bg-gray-700 placeholder-gray-400 focus:outline-none" />
-      <input type="tel" placeholder="Phone Number" class="w-full px-4 py-2 rounded bg-gray-700 placeholder-gray-400 focus:outline-none" />
-    </div>
+    // Apply Telegram theme (dark/light)
+    document.body.style.backgroundColor = tg.themeParams.bg_color || "#ffffff";
+    document.body.style.color = tg.themeParams.text_color || "#000000";
 
-    <!-- Step 2: Blofin -->
-    <div class="space-y-2">
-      <h2 class="text-xl font-semibold text-blue-400">2️⃣ Sign Up on Blofin</h2>
-      <a href="https://blofin.com/signup" class="block text-center text-white bg-blue-600 hover:bg-blue-500 py-2 px-4 rounded-lg">🔗 Sign Up via Referral</a>
-      <input type="text" placeholder="Paste your UID" class="w-full px-4 py-2 rounded bg-gray-700 placeholder-gray-400" />
-    </div>
+    // Extract user info from Telegram WebApp
+    const initDataUnsafe = tg.initDataUnsafe;
+    const user = initDataUnsafe.user;
 
-    <!-- Step 3: Axiom -->
-    <div class="space-y-2">
-      <h2 class="text-xl font-semibold text-pink-400">3️⃣ Sign Up on Axiom</h2>
-      <a href="https://axiom.exchange/signup" class="block text-center text-white bg-pink-600 hover:bg-pink-500 py-2 px-4 rounded-lg">🔗 Axiom Referral</a>
-      <p class="text-xs text-gray-400">No API verification — we’ll check manually.</p>
-    </div>
-
-    <!-- Step 4: Terms -->
-    <div class="space-y-2">
-      <label class="inline-flex items-center space-x-2">
-        <input type="checkbox" class="form-checkbox text-green-500" />
-        <span>I agree to the <a href="#" class="underline text-green-400">Terms of Service</a></span>
-      </label>
-    </div>
-
-    <!-- Final Step -->
-    <button class="w-full py-3 bg-green-600 hover:bg-green-500 rounded-xl font-bold text-lg">
-      ✅ Verify & Get Channel Access
-    </button>
-
-  </div>
+    if (user) {
+      const name = `${user.first_name || ""} ${user.last_name || ""}`;
+      const userId = user.id;
+      document.getElementById("user").innerText = `👋 Hello ${name} (ID: ${userId})`;
+    } else {
+      document.getElementById("user").innerText = "👋 Hello from Telegram!";
+    }
+  </script>
 </body>
 </html>
