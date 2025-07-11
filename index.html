@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gem Hunters Onboarding</title>
 
+  <!-- ✅ Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,105 +21,103 @@
     .container {
       max-width: 500px;
       margin: auto;
-      background: #0a1d3c; /* Navy dark blue */
+      background: rgba(0, 16, 40, 0.96);
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      color: #ffffff;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
-    h1 {
-      font-size: 20px;
+    h1, p {
       text-align: center;
-      margin-bottom: 10px;
-    }
-
-    p {
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 200px;
-      border-radius: 12px;
-      margin: 16px 0;
-      border: none;
     }
 
     .step {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
       padding: 12px;
       border-radius: 10px;
       margin: 10px 0;
     }
 
-    .step-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
     button {
       width: 100%;
       padding: 12px;
-      background: #3390ec;
+      background: #2e90fa;
       color: white;
       border: none;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 16px;
     }
 
-    button:hover {
-      background: #287dd0;
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
     }
 
-    a {
-      color: #66bfff;
-      text-decoration: underline;
+    iframe {
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: none;
+    }
+
+    .verify-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Gem Hunters Lite Onboarding</h1>
-    <p>Watch the tutorial and follow the steps below to get started.</p>
-
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+    <h1>📈 Trade With Me On BloFin</h1>
+    <p><strong>First 1,000</strong> sign ups get gifted <strong>FREE $30</strong> when you deposit into your futures account!</p>
 
     <div class="step">
-      <div class="step-title">Step 1</div>
-      <div>Register with BloFin</div>
+      <h3>Step 1: Watch How To Sign Up</h3>
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
     </div>
 
     <div class="step">
-      <div class="step-title">Step 2</div>
-      <div>Register with Photon</div>
+      <h3>Step 2: Sign Up On BloFin</h3>
+      <p>Click the button below to register and get your UID (User ID).</p>
+      <button onclick="handleRegistration()">Continue to Registration</button>
     </div>
 
-    <div class="step">
-      <div class="step-title">Step 3</div>
-      <div>Check your registration email</div>
+    <div class="verify-section">
+      <p>Already signed up? Click below 👇</p>
+      <button id="verifyBtn" onclick="handleVerify()" disabled>Verify</button>
     </div>
 
-    <div class="step">
-      <div class="step-title">Step 4</div>
-      <div>Join the official <a href="https://t.me/YOUR_TELEGRAM_GROUP" target="_blank">Telegram Group</a></div>
-    </div>
-
-    <button onclick="submitData()">Continue to Registration</button>
+    <div class="footer">@GemHuntersFree_Bot</div>
   </div>
 
   <script>
-    function submitData() {
-      Telegram.WebApp.sendData("registration_started");
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof Telegram !== "undefined" && Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        console.log("✅ Telegram WebApp is ready");
 
-    Telegram.WebApp.ready(); // Notify Telegram you're ready
+        window.handleRegistration = function () {
+          Telegram.WebApp.openTelegramLink("https://blofin.com/signup");
+          document.getElementById("verifyBtn").disabled = false;
+        };
+
+        window.handleVerify = function () {
+          Telegram.WebApp.sendData(JSON.stringify({ action: "verify_clicked" }));
+        };
+      } else {
+        console.warn("❌ Telegram.WebApp not available. Are you running this inside Telegram?");
+      }
+    });
   </script>
 </body>
 </html>
