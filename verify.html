@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verify UID</title>
+  <title>אימות UID</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,6 +11,7 @@
       margin: 0;
       padding: 2rem;
       color: white;
+      direction: rtl;
     }
 
     .container {
@@ -26,6 +27,7 @@
       margin-bottom: 1rem;
       color: #4ea0ff;
       font-size: 20px;
+      text-align: center;
     }
 
     p {
@@ -61,11 +63,11 @@
 </head>
 <body>
   <div class="container">
-    <h2>🔍 UID Verification</h2>
-    <p>Enter your BloFin UID below</p>
-    <input type="text" id="uid" placeholder="Enter UID here" />
+    <h2>🔍 אימות UID</h2>
+    <p>הזן את ה-UID שלך מ-BloFin</p>
+    <input type="text" id="uid" placeholder="הזן UID כאן" />
     <br />
-    <button onclick="verifyUID()">Verify Now</button>
+    <button onclick="verifyUID()">לאמת עכשיו</button>
     <div id="status"></div>
   </div>
 
@@ -77,12 +79,12 @@
       const statusDiv = document.getElementById("status");
 
       if (!uid) {
-        statusDiv.textContent = "❌ Please enter a valid UID.";
+        statusDiv.textContent = "❌ אנא הזן UID תקין.";
         statusDiv.style.color = "red";
         return;
       }
 
-      statusDiv.textContent = "Checking UID... ⏳";
+      statusDiv.textContent = "בודק UID... ⏳";
       statusDiv.style.color = "white";
 
       try {
@@ -97,15 +99,14 @@
         const data = await response.json();
 
         if (data.success) {
-          statusDiv.textContent = "✅ Verified successfully!";
+          statusDiv.textContent = "✅ UID אומת בהצלחה!";
           statusDiv.style.color = "lightgreen";
-          // Optional: Telegram.WebApp.close();
         } else {
-          statusDiv.textContent = "❌ UID not found.";
+          statusDiv.textContent = "❌ UID לא נמצא.";
           statusDiv.style.color = "red";
         }
       } catch (err) {
-        statusDiv.textContent = "⚠️ Error verifying UID. Try again later.";
+        statusDiv.textContent = "⚠️ שגיאה באימות UID. נסה שוב מאוחר יותר.";
         statusDiv.style.color = "red";
         console.error(err);
       }
