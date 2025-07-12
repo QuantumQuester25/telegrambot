@@ -6,10 +6,17 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
+# Load credentials from environment
 API_KEY = os.getenv("BLOFIN_API_KEY")
 API_SECRET = os.getenv("BLOFIN_API_SECRET")
 PASSPHRASE = os.getenv("BLOFIN_PASSPHRASE")
 
+# Health check route
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ Flask is running!", 200
+
+# UID verification route
 @app.route("/verify", methods=["POST"])
 def verify_uid():
     data = request.get_json()
@@ -27,6 +34,7 @@ def verify_uid():
 
     try:
         response = requests.get("https://api.blofin.com/api/v1/affiliate/invitees", headers=headers)
+
         try:
             invitees = response.json().get("data", [])
         except Exception:
@@ -40,3 +48,7 @@ def verify_uid():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+# Required for local or gunicorn start
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
