@@ -12,10 +12,10 @@ if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN not set in environment.")
 
 app = Flask(__name__)
+loop = asyncio.get_event_loop()
 
 # Telegram bot application
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
-loop = asyncio.get_event_loop()
 
 # /start command handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -42,8 +42,14 @@ def webhook():
     loop.create_task(telegram_app.process_update(update))
     return "ok", 200
 
-if __name__ == "__main__":
+# 🔥 Initialize Telegram bot on startup
+def init_bot():
     print("🔄 Initializing Telegram bot...")
     loop.run_until_complete(telegram_app.initialize())
     print("✅ Telegram bot initialized.")
+
+init_bot()
+
+if __name__ == "__main__":
+    print("🔥 Flask app starting")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
