@@ -21,10 +21,15 @@ telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 # /start handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("📬 /start command received!")
-    keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]]
-    )
-    await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
+
+    try:
+        keyboard = InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]]
+        )
+        await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
+    except Exception as e:
+        print(f"❌ Failed to send /start message: {e}")
+
 
 telegram_app.add_handler(CommandHandler("start", start))
 
