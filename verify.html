@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>אימות UID</title>
+  <title>Verify UID</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -61,11 +61,11 @@
 </head>
 <body>
   <div class="container">
-    <h2>🔍 אימות UID</h2>
-    <p>הזן את מזהה BloFin שלך (UID)</p>
-    <input type="text" id="uid" placeholder="הכנס UID כאן" />
+    <h2>🔍 UID Verification</h2>
+    <p>Enter your BloFin UID below</p>
+    <input type="text" id="uid" placeholder="Enter UID here" />
     <br />
-    <button onclick="verifyUID()">אמת עכשיו</button>
+    <button onclick="verifyUID()">Verify Now</button>
     <div id="status"></div>
   </div>
 
@@ -77,45 +77,35 @@
       const statusDiv = document.getElementById("status");
 
       if (!uid) {
-        statusDiv.textContent = "❌ נא להזין UID תקין";
+        statusDiv.textContent = "❌ Please enter a valid UID.";
         statusDiv.style.color = "red";
         return;
       }
 
-      statusDiv.textContent = "בודק UID שלך... ⏳";
+      statusDiv.textContent = "Checking UID... ⏳";
       statusDiv.style.color = "white";
 
-      const apiKey = "9c79690a9dc84a798be00d2d05b31e8d";
-      const apiSecret = "7174cb58836543bca990e1e94325a93c";
-      const passphrase = "Shabak123";
-
       try {
-        const response = await fetch("https://api.blofin.com/api/v1/aliate/invitees", {
-          method: "GET",
+        const response = await fetch("https://telegrambot-production-a0ac.up.railway.app/verify", {
+          method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "BF-API-KEY": apiKey,
-            "BF-API-SECRET": apiSecret,
-            "BF-API-PASSPHRASE": passphrase
-          }
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ uid })
         });
 
         const data = await response.json();
-        const invitees = data.data || [];
-        const match = invitees.find(user => user.userId == uid);
 
-        if (match) {
-          statusDiv.textContent = "✅ אומת בהצלחה! אתה מוזמן להמשיך.";
+        if (data.success) {
+          statusDiv.textContent = "✅ Verified successfully!";
           statusDiv.style.color = "lightgreen";
-
-          // Optionally close the Mini App after success
-          // Telegram.WebApp.close();
+          // Optional: Telegram.WebApp.close();
         } else {
-          statusDiv.textContent = "❌ המשתמש לא נמצא ברשימת ההזמנות שלך.";
+          statusDiv.textContent = "❌ UID not found.";
           statusDiv.style.color = "red";
         }
       } catch (err) {
-        statusDiv.textContent = "⚠️ שגיאה בבדיקת UID. נסה שוב מאוחר יותר.";
+        statusDiv.textContent = "⚠️ Error verifying UID. Try again later.";
         statusDiv.style.color = "red";
         console.error(err);
       }
