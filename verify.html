@@ -6,110 +6,61 @@
   <title>אימות UID</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #07162a;
-      margin: 0;
-      padding: 2rem;
+      background-color: #0a1629;
       color: white;
-      direction: rtl;
-    }
-
-    .container {
-      background: #0b1f3a;
-      border-radius: 16px;
-      max-width: 400px;
-      margin: auto;
-      padding: 2rem;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-
-    h2 {
-      margin-bottom: 1rem;
-      color: #4ea0ff;
-      font-size: 20px;
+      font-family: sans-serif;
       text-align: center;
+      padding: 20px;
     }
-
-    p {
-      margin-bottom: 1rem;
-    }
-
     input {
-      padding: 0.8rem;
-      width: 90%;
-      margin-bottom: 1rem;
+      padding: 12px;
+      width: 80%;
+      margin: 10px 0;
+      font-size: 16px;
       border-radius: 8px;
       border: none;
-      font-size: 1rem;
     }
-
-    button {
-      padding: 0.8rem 1.6rem;
-      background: #1c64f2;
+    .button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #1e88e5;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
+      margin: 10px;
       cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    #status {
-      margin-top: 1rem;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🔍 אימות UID</h2>
-    <p>הזן את ה-UID שלך מ-BloFin</p>
-    <input type="text" id="uid" placeholder="הזן UID כאן" />
-    <br />
-    <button onclick="verifyUID()">לאמת עכשיו</button>
-    <div id="status"></div>
-  </div>
+  <h2>אמת את ה-UID שלך</h2>
+  <input type="text" id="uid" placeholder="הכנס UID כאן" />
+
+  <br/>
+  <button class="button" onclick="verifyUID()">אימות</button>
+  <button class="button" onclick="goBack()">⬅ חזור</button>
 
   <script>
-    Telegram.WebApp.ready();
-
     async function verifyUID() {
-      const uid = document.getElementById("uid").value;
-      const statusDiv = document.getElementById("status");
-
-      if (!uid) {
-        statusDiv.textContent = "❌ אנא הזן UID תקין.";
-        statusDiv.style.color = "red";
-        return;
-      }
-
-      statusDiv.textContent = "בודק UID... ⏳";
-      statusDiv.style.color = "white";
+      const uid = document.getElementById('uid').value;
+      if (!uid) return alert('נא להזין UID');
 
       try {
-        const response = await fetch("https://telegrambot-production-a0ac.up.railway.app/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ uid })
+        const res = await fetch('https://telegrambot-production-a0ac.up.railway.app/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid }),
         });
 
-        const data = await response.json();
-
-        if (data.success) {
-          statusDiv.textContent = "✅ UID אומת בהצלחה!";
-          statusDiv.style.color = "lightgreen";
-        } else {
-          statusDiv.textContent = "❌ UID לא נמצא.";
-          statusDiv.style.color = "red";
-        }
+        const data = await res.json();
+        alert(data.message || 'התשובה התקבלה');
       } catch (err) {
-        statusDiv.textContent = "⚠️ שגיאה באימות UID. נסה שוב מאוחר יותר.";
-        statusDiv.style.color = "red";
-        console.error(err);
+        alert('שגיאה באימות. נסה שוב.');
       }
+    }
+
+    function goBack() {
+      window.history.back(); // Go back to register.html
     }
   </script>
 </body>
