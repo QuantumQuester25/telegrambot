@@ -44,9 +44,10 @@ def home():
 
 @app.route("/setwebhook", methods=["GET"])
 def set_webhook():
-    webhook_url = f"{request.url_root}webhook/{BOT_TOKEN}"
+    webhook_url = f"https://telegrambot-production-7130.up.railway.app/webhook/{BOT_TOKEN}"
     loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
     return f"Webhook set to: {webhook_url}", 200
+
 
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
