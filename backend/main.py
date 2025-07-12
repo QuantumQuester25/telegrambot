@@ -1,5 +1,6 @@
 import os
 import asyncio
+import threading
 from flask import Flask, request
 from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, ApplicationBuilder, CommandHandler, ContextTypes
@@ -12,7 +13,8 @@ if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN not set in environment.")
 
 app = Flask(__name__)
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 # Telegram bot application
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -26,29 +28,33 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 telegram_app.add_handler(CommandHandler("start", start))
 
-# Home route
-@app.route("/", methods=["GET"])
-def home():
-    return "Bot is live!", 200
-
-# Webhook route (Telegram sends updates here)
+# Webhook route
 @app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
     loop.create_task(telegram_app.process_update(update))
     return "ok", 200
 
-# 🔄 Initialize bot + set webhook on first request
-@app.before_first_request
-def setup_bot_and_webhook():
-    print("⚙️ First request received — setting up bot and webhook")
-    loop.run_until_complete(telegram_app.initialize())
-    print("✅ Telegram bot initialized.")
-    webhook_url = "https://telegrambot-production-7130.up.railway.app/webhook"
-    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
-    print(f"✅ Webhook set to: {webhook_url}")
+# Home route
+@app.route("/", methods=["GET"])
+def home():
+    return "Bot is live!", 200
 
-# Start Flask server
+# Setup function for bot + webhook
+def setup_bot():
+    print("🔄 Initializing Telegram bot + webhook")
+    loop.run_until_complete(telegram_app.initialize())
+    loop.run_until_complete(telegram_app.bot.set_webhook("https://telegrambot-production-7130.up.railway.app/webhook"))
+    print("✅ Bot initialized and webhook set")
+
+# Launch setup in background thread on first Flask request
+@app.before_request
+def before_request():
+    if not getattr(app, 'bot_ready', False):
+        threading.Thread(target=setup_bot).start()
+        app.bot_ready = True
+
+# Start Flask
 if __name__ == "__main__":
     print("🔥 Flask app starting")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
