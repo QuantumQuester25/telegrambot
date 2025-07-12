@@ -3,95 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>הצטרפות ל-Gem Hunters</title>
-
+  <title>Shabak Onboarding</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 16px;
-      background: url('https://i.ibb.co/mWwT9rH/Untitled-design-7.png') no-repeat center center fixed;
+      font-family: 'Arial', sans-serif;
+      background: url('https://ibb.co/Rwmb3GC') no-repeat center center fixed;
       background-size: cover;
-      color: #fff;
+      margin: 0;
+      padding: 0;
+      color: white;
       direction: rtl;
     }
 
     .container {
-      max-width: 500px;
+      background-color: rgba(5, 25, 50, 0.9);
+      max-width: 400px;
       margin: auto;
-      background: rgba(0, 16, 40, 0.96); /* Dark navy blue */
+      margin-top: 30px;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      border-radius: 15px;
     }
 
     h1 {
-      font-size: 20px;
       text-align: center;
-      margin-bottom: 10px;
+      font-size: 24px;
     }
 
-    p {
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    iframe {
+    input {
       width: 100%;
-      height: 200px;
-      border-radius: 12px;
-      margin: 16px 0;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
-    }
-
-    .step-title {
-      font-weight: bold;
-      margin: 12px 0 4px;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background: #2e90fa;
-      color: white;
+      background-color: #00bfff;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
+      border-radius: 10px;
+      color: white;
+      font-size: 18px;
       cursor: pointer;
-      margin-top: 16px;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    iframe {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    ul {
+      padding: 0 20px;
+      list-style-type: decimal;
+    }
+
+    li {
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>הצטרפות מהירה ל-Gem Hunters</h1>
-    <p>צפה בסרטון ולך לפי הצעדים כדי להתחיל</p>
+    <h1>ברוכים הבאים ל-Shabak</h1>
 
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+    <form id="userForm">
+      <input type="text" id="fullName" placeholder="שם מלא" required />
+      <input type="email" id="email" placeholder="אימייל" required />
+      <input type="tel" id="phone" placeholder="מספר טלפון" required />
+      <button type="submit" id="continueBtn" disabled>המשך להרשמה</button>
+    </form>
 
-    <div class="step-title">שלב 1</div>
-    <div>הירשם ל-BloFin</div>
+    <h2>שלבים להצטרפות:</h2>
+    <ul>
+      <li>הירשם בבורסת BloFin וקבל בונוס של $30</li>
+      <li>שלח את מזהה המשתמש שלך לאימות</li>
+      <li>השלם הרשמה ל-Axiom</li>
+      <li>קבל גישה חינמית לקבוצת הטלגרם</li>
+    </ul>
 
-    <div class="step-title">שלב 2</div>
-    <div>הירשם ל-Photon</div>
-
-    <div class="step-title">שלב 3</div>
-    <div>הצטרף לקבוצת הטלגרם שלנו</div>
-
-    <div class="step-title">שלב 4</div>
-    <div>לחץ על "הרשמה" כדי להמשיך</div>
-
-    <button onclick="goToRegister()">הרשמה</button>
+    <iframe width="100%" height="200" src="https://www.youtube.com/embed/MUBhIG0XjNQ" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <script>
-    function goToRegister() {
-      window.location.href = "register.html"; // Go to next screen
+    const fullName = document.getElementById("fullName");
+    const email = document.getElementById("email");
+    const phone = document.getElementById("phone");
+    const btn = document.getElementById("continueBtn");
+
+    function checkInputs() {
+      if (fullName.value && email.value && phone.value) {
+        btn.disabled = false;
+      } else {
+        btn.disabled = true;
+      }
     }
 
-    Telegram.WebApp.ready();
+    fullName.addEventListener("input", checkInputs);
+    email.addEventListener("input", checkInputs);
+    phone.addEventListener("input", checkInputs);
+
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // Optional: Save data to localStorage
+      localStorage.setItem("fullName", fullName.value);
+      localStorage.setItem("email", email.value);
+      localStorage.setItem("phone", phone.value);
+      window.location.href = "register.html";
+    });
   </script>
 </body>
 </html>
