@@ -31,9 +31,12 @@ telegram_app.add_handler(CommandHandler("start", start))
 # Webhook route
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), telegram_app.bot)
+    data = request.get_json(force=True)
+    print("Webhook received data:", data)  # <--- add this line
+    update = Update.de_json(data, telegram_app.bot)
     loop.create_task(telegram_app.process_update(update))
     return "ok", 200
+
 
 # Home route
 @app.route("/", methods=["GET"])
