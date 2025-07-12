@@ -22,18 +22,18 @@ initialized = False
 
 # Handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton(
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton(
             text="🚀 Open Gem Hunters",
             web_app=WebAppInfo(url="https://telegrambot2797.vercel.app")
-        )]
-    ])
+        )
+    ]])
     await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
 
 telegram_app.add_handler(CommandHandler("start", start))
 
-
-@app.before_first_request
+# ✅ Updated to use before_request (Flask 3.x compatible)
+@app.before_request
 def init_bot():
     global initialized
     if not initialized:
@@ -56,5 +56,5 @@ def set_webhook():
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    loop.create_task(telegram_app.process_update(update))  # ✅ no asyncio.run
+    loop.create_task(telegram_app.process_update(update))
     return "ok", 200
