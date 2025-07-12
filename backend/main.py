@@ -26,23 +26,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 telegram_app.add_handler(CommandHandler("start", start))
 
+# Home route
 @app.route("/", methods=["GET"])
 def home():
     return "Bot is live!", 200
 
-@app.route("/setwebhook", methods=["GET"])
-def set_webhook():
-    webhook_url = f"https://telegrambot-production-7130.up.railway.app/webhook/{BOT_TOKEN}"
-    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
-    return f"Webhook set to: {webhook_url}", 200
-
-@app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
+# Webhook route (Telegram sends updates here)
+@app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
     loop.create_task(telegram_app.process_update(update))
     return "ok", 200
 
-# 🔥 Initialize Telegram bot on startup
+# Set webhook endpoint (call once after deployment)
+@app.route("/setwebhook", methods=["GET"])
+def set_webhook():
+    webhook_url = "https://telegrambot-production-7130.up.railway.app/webhook"
+    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
+    return f"Webhook set to: {webhook_url}", 200
+
+# Initialize bot once at startup
 def init_bot():
     print("🔄 Initializing Telegram bot...")
     loop.run_until_complete(telegram_app.initialize())
@@ -50,6 +53,7 @@ def init_bot():
 
 init_bot()
 
+# Start Flask server
 if __name__ == "__main__":
     print("🔥 Flask app starting")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
