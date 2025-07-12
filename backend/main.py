@@ -16,14 +16,15 @@ if not BOT_TOKEN:
 # Flask app
 app = Flask(__name__)
 
-# Telegram app
+# Create Telegram bot app (without starting it yet)
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# Event loop
+# Create single asyncio loop
 loop = asyncio.get_event_loop()
-bot_initialized = False  # prevent double init
+bot_initialized = False
 
-# Command: /start
+
+# Async /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = InlineKeyboardMarkup([[
         InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))
@@ -32,19 +33,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 telegram_app.add_handler(CommandHandler("start", start))
 
-@app.before_request
-def initialize_bot():
+
+@app.before_first_request
+def init_bot():
     global bot_initialized
     if not bot_initialized:
         print("🔄 Initializing bot...")
         loop.run_until_complete(telegram_app.initialize())
-        loop.run_until_complete(telegram_app.start())  # ✅ Start the bot!
         bot_initialized = True
-        print("✅ Bot initialized and started.")
+        print("✅ Bot initialized and ready.")
+
 
 @app.route("/", methods=["GET"])
 def home():
     return "Bot is live!", 200
+
 
 @app.route("/setwebhook", methods=["GET"])
 def set_webhook():
@@ -52,12 +55,9 @@ def set_webhook():
     loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
     return f"Webhook set to: {webhook_url}", 200
 
+
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
-    try:
-        update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-        loop.create_task(telegram_app.process_update(update))
-        return "ok", 200
-    except Exception as e:
-        print("❌ Webhook error:", e)
-        return "Internal Server Error", 500
+    update = Update.de_json(request.get_json(force=True), telegram_app.bot)
+    loop.create_task(telegram_app.process_update(update))
+    return "ok", 200
