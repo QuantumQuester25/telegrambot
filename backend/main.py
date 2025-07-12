@@ -1,27 +1,27 @@
+import os
 from flask import Flask, request
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
-import os
 
+# Load bot token
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-app = Flask(__name__)
 
+# Initialize Telegram bot application
 telegram_app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# Example command
+# Define a command handler (e.g., /start)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello from webhook!")
+    await update.message.reply_text("Hello, I'm alive and running on Render! 🚀")
 
+# Add handler to the application
 telegram_app.add_handler(CommandHandler("start", start))
 
+# Create Flask app
+app = Flask(__name__)
+
+# Route to receive Telegram webhooks
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
-def webhook():
+async def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    telegram_app.update_queue.put_nowait(update)
-    return "ok"
-
-@app.route("/")
-def index():
-    return "Telegram bot is running!"
-
-# Set webhook when deployed (e.g., from another script or manually)
+    await telegram_app.process_update(update)
+    return "ok", 200
