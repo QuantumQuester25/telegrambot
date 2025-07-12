@@ -1,31 +1,27 @@
+from flask import Flask, request
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 import os
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-WEBAPP_URL = os.getenv("WEBAPP_URL")  # e.g. https://telegrambot2797.vercel.app
+app = Flask(__name__)
 
-app = ApplicationBuilder().token(BOT_TOKEN).build()
+telegram_app = ApplicationBuilder().token(BOT_TOKEN).build()
 
+# Example command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    buttons = [
-        [
-            InlineKeyboardButton(
-                "🚀 Launch App",
-                web_app=WebAppInfo(url=WEBAPP_URL)
-            )
-        ]
-    ]
-    keyboard = InlineKeyboardMarkup(buttons)
+    await update.message.reply_text("Hello from webhook!")
 
-    await update.message.reply_text(
-        f"Hi {update.effective_user.first_name}!\nClick below to launch the web app:",
-        reply_markup=keyboard
-    )
+telegram_app.add_handler(CommandHandler("start", start))
 
-# Add handler
-app.add_handler(CommandHandler("start", start))
+@app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
+def webhook():
+    update = Update.de_json(request.get_json(force=True), telegram_app.bot)
+    telegram_app.update_queue.put_nowait(update)
+    return "ok"
+
+@app.route("/")
+def index():
+    return "Telegram bot is running!"
+
+# Set webhook when deployed (e.g., from another script or manually)
