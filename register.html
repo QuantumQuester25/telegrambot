@@ -106,7 +106,7 @@
 
     <div class="section">
       <p>כבר נרשמת? לחץ למטה 👇</p>
-      <button class="verify-button" onclick="Telegram.WebApp.openTelegramLink('https://telegrambot2797.vercel.app/verify.html')">
+      <button class="verify-button" onclick="goToVerify()">
         אמת UID
       </button>
     </div>
@@ -115,6 +115,10 @@
 
   <script>
     Telegram.WebApp.ready();
+
+    function goToVerify() {
+      window.location.href = "verify.html";  // ✅ open in same tab
+    }
   </script>
 </body>
 </html>
