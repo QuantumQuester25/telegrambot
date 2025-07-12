@@ -1,6 +1,5 @@
 import os
 import asyncio
-import threading
 from flask import Flask, request
 from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, ApplicationBuilder, CommandHandler, ContextTypes
@@ -9,17 +8,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    raise RuntimeError("BOT_TOKEN not set in environment.")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Set this in your .env as your public URL + "/webhook"
+
+if not BOT_TOKEN or not WEBHOOK_URL:
+    raise RuntimeError("BOT_TOKEN or WEBHOOK_URL not set in environment.")
 
 app = Flask(__name__)
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
+loop = asyncio.get_event_loop()
 
-# Telegram bot application
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# /start command handler
+# /start handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]]
@@ -40,21 +39,15 @@ def webhook():
 def home():
     return "Bot is live!", 200
 
-# Setup function for bot + webhook
-def setup_bot():
+# ✅ Set webhook during startup
+async def setup():
     print("🔄 Initializing Telegram bot + webhook")
-    loop.run_until_complete(telegram_app.initialize())
-    loop.run_until_complete(telegram_app.bot.set_webhook("https://telegrambot-production-7130.up.railway.app/webhook"))
+    await telegram_app.initialize()
+    await telegram_app.bot.set_webhook(WEBHOOK_URL)
     print("✅ Bot initialized and webhook set")
 
-# Launch setup in background thread on first Flask request
-@app.before_request
-def before_request():
-    if not getattr(app, 'bot_ready', False):
-        threading.Thread(target=setup_bot).start()
-        app.bot_ready = True
+loop.run_until_complete(setup())
 
-# Start Flask
+# Gunicorn entry
 if __name__ == "__main__":
-    print("🔥 Flask app starting")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
