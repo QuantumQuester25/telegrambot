@@ -1,61 +1,43 @@
 from flask import Flask, request, jsonify
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-import requests
-import threading
+from flask_cors import CORS
 
-# --- Telegram Bot Setup ---
-sptoken = "7739973667:AAHeNLoO_11GEIJqN1aCRu8z9AoSYr82YSU"
+app = Flask(__name__)
+CORS(app)
 
-bot_app = ApplicationBuilder().token(sptoken).build()
+API_KEY = "9c79690a9dc84a798be00d2d05b31e8d"
+API_SECRET = "7174cb58836543bca990e1e94325a93c"
+PASSPHRASE = "Shabak123"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    buttons = [
-        [InlineKeyboardButton("🚀 Launch App", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]
-    ]
-    keyboard = InlineKeyboardMarkup(buttons)
-    await update.message.reply_text(
-        f"Hi {update.effective_user.first_name}!\nClick below to launch the web app:",
-        reply_markup=keyboard
-    )
-
-bot_app.add_handler(CommandHandler("start", start))
-
-# --- Flask Backend Setup ---
-flask_app = Flask(__name__)
-
-@flask_app.route('/verify', methods=['POST'])
+@app.route("/verify", methods=["POST"])
 def verify_uid():
-    uid = request.json.get('uid')
+    data = request.get_json()
+    uid = data.get("uid")
+
+    if not uid:
+        return jsonify({"success": False, "message": "UID is required"}), 400
 
     headers = {
-        "BF-API-KEY": "9c79690a9dc84a798be00d2d05b31e8d",
-        "BF-API-SECRET": "7174cb58836543bca990e1e94325a93c",
-        "BF-API-PASSPHRASE": "Shabak123",
-        "Content-Type": "application/json"
+        "BF-API-KEY": API_KEY,
+        "BF-API-SECRET": API_SECRET,
+        "BF-API-PASSPHRASE": PASSPHRASE,
     }
 
     try:
+        import requests
         response = requests.get("https://api.blofin.com/api/v1/affiliate/invitees", headers=headers)
-        data = response.json().get("data", [])
-        match = next((i for i in data if str(i["userId"]) == uid), None)
+        invitees = response.json().get("data", [])
 
-        if match:
-            return jsonify({"verified": True})
-        else:
-            return jsonify({"verified": False})
+        for invitee in invitees:
+            if str(invitee.get("userId")) == str(uid):
+                return jsonify({"success": True, "message": "UID verified ✅"})
+
+        return jsonify({"success": False, "message": "UID not found ❌"})
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"verified": False, "error": "API error"}), 500
+        return jsonify({"success": False, "message": f"Error: {str(e)}"}), 500
 
-# --- Run Both Flask and Telegram Bot Together ---
-def run_flask():
-    flask_app.run(port=5000)
+@app.route("/", methods=["GET"])
+def home():
+    return "🧠 BloFin Bot Backend is running!"
 
-def run_telegram():
-    print("🤖 Telegram Bot is running...")
-    bot_app.run_polling()
-
-if __name__ == '__main__':
-    threading.Thread(target=run_flask).start()
-    run_telegram()
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
