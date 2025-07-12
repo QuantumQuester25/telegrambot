@@ -16,29 +16,31 @@ if not BOT_TOKEN:
 # Flask app
 app = Flask(__name__)
 
-# Telegram bot application
+# Telegram app
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 
 # Event loop
 loop = asyncio.get_event_loop()
-bot_initialized = False  # flag to avoid double init
+bot_initialized = False  # prevent double init
 
-# /start command
+# Command: /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]
-    ])
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))
+    ]])
     await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
 
 telegram_app.add_handler(CommandHandler("start", start))
 
 @app.before_request
-def ensure_bot_initialized():
+def initialize_bot():
     global bot_initialized
     if not bot_initialized:
-        # Run initialization once
+        print("🔄 Initializing bot...")
         loop.run_until_complete(telegram_app.initialize())
+        loop.run_until_complete(telegram_app.start())  # ✅ Start the bot!
         bot_initialized = True
+        print("✅ Bot initialized and started.")
 
 @app.route("/", methods=["GET"])
 def home():
@@ -52,6 +54,10 @@ def set_webhook():
 
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    loop.create_task(telegram_app.process_update(update))
-    return "ok", 200
+    try:
+        update = Update.de_json(request.get_json(force=True), telegram_app.bot)
+        loop.create_task(telegram_app.process_update(update))
+        return "ok", 200
+    except Exception as e:
+        print("❌ Webhook error:", e)
+        return "Internal Server Error", 500
