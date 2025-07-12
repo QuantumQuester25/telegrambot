@@ -38,20 +38,15 @@ def webhook():
     loop.create_task(telegram_app.process_update(update))
     return "ok", 200
 
-# Set webhook endpoint (call once after deployment)
-@app.route("/setwebhook", methods=["GET"])
-def set_webhook():
-    webhook_url = "https://telegrambot-production-7130.up.railway.app/webhook"
-    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
-    return f"Webhook set to: {webhook_url}", 200
-
-# Initialize bot once at startup
-def init_bot():
-    print("🔄 Initializing Telegram bot...")
+# 🔄 Initialize bot + set webhook on first request
+@app.before_first_request
+def setup_bot_and_webhook():
+    print("⚙️ First request received — setting up bot and webhook")
     loop.run_until_complete(telegram_app.initialize())
     print("✅ Telegram bot initialized.")
-
-init_bot()
+    webhook_url = "https://telegrambot-production-7130.up.railway.app/webhook"
+    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
+    print(f"✅ Webhook set to: {webhook_url}")
 
 # Start Flask server
 if __name__ == "__main__":
