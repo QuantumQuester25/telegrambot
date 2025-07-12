@@ -33,14 +33,14 @@ app = Flask(__name__)
 def index():
     return "Bot is live!", 200
 
-# Webhook setup route
 @app.route("/setwebhook", methods=["GET"])
 def set_webhook():
-    webhook_url = f"https://telegrambot-production-a0ac.up.railway.app/webhook/{BOT_TOKEN}"
-    asyncio.run(telegram_app.bot.set_webhook(webhook_url))
+    webhook_url = f"https://telegrambot-production-39fd.up.railway.app/webhook/{BOT_TOKEN}"
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
     return f"Webhook set to: {webhook_url}", 200
 
-# Webhook receiver
 @app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
