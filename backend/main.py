@@ -27,10 +27,10 @@ telegram_app.add_handler(CommandHandler("start", start))
 # Flask app
 app = Flask(__name__)
 
-# Safe manual webhook setup
+# ✅ Webhook setup (with correct Railway URL)
 @app.route("/setwebhook", methods=["GET"])
 def set_webhook():
-    webhook_url = f"https://your-render-url.onrender.com/webhook/{BOT_TOKEN}"
+    webhook_url = f"https://telegrambot-production-a0ac.up.railway.app/webhook/{BOT_TOKEN}"
     asyncio.run(telegram_app.bot.set_webhook(webhook_url))
     return f"Webhook set to: {webhook_url}", 200
 
