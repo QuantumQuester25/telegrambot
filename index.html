@@ -2,122 +2,97 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shabak Onboarding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telegram Mini App</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
       background: url('https://ibb.co/Rwmb3GC') no-repeat center center fixed;
       background-size: cover;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
       color: white;
-      direction: rtl;
-    }
-
-    .container {
-      background-color: rgba(5, 25, 50, 0.9);
-      max-width: 400px;
-      margin: auto;
-      margin-top: 30px;
+      text-align: right;
       padding: 20px;
-      border-radius: 15px;
     }
-
-    h1 {
-      text-align: center;
-      font-size: 24px;
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(0, 0, 50, 0.85);
+      padding: 20px;
+      border-radius: 10px;
     }
-
-    input {
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 5px;
+      border-radius: 5px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      font-size: 1rem;
     }
-
     button {
-      width: 100%;
-      padding: 12px;
-      background-color: #00bfff;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #0066cc;
       border: none;
-      border-radius: 10px;
       color: white;
-      font-size: 18px;
+      font-weight: bold;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:disabled {
-      background-color: gray;
-      cursor: not-allowed;
-    }
-
-    iframe {
       width: 100%;
-      border-radius: 10px;
-      margin-top: 15px;
     }
-
-    ul {
-      padding: 0 20px;
-      list-style-type: decimal;
-    }
-
-    li {
-      margin-bottom: 10px;
+    button:hover {
+      background-color: #004999;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>ברוכים הבאים ל-Shabak</h1>
+    <h1>ברוכים הבאים לאפליקציה שלנו</h1>
 
-    <form id="userForm">
-      <input type="text" id="fullName" placeholder="שם מלא" required />
-      <input type="email" id="email" placeholder="אימייל" required />
-      <input type="tel" id="phone" placeholder="מספר טלפון" required />
-      <button type="submit" id="continueBtn" disabled>המשך להרשמה</button>
+    <!-- Existing content like onboarding steps, YouTube iframe, etc. -->
+
+    <h2>טופס הרשמה</h2>
+    <form id="signup-form">
+      <label for="name">שם מלא</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">אימייל</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="phone">טלפון</label>
+      <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" placeholder="לדוגמה: 0501234567" />
+
+      <button type="submit">שלח</button>
     </form>
 
-    <h2>שלבים להצטרפות:</h2>
-    <ul>
-      <li>הירשם בבורסת BloFin וקבל בונוס של $30</li>
-      <li>שלח את מזהה המשתמש שלך לאימות</li>
-      <li>השלם הרשמה ל-Axiom</li>
-      <li>קבל גישה חינמית לקבוצת הטלגרם</li>
-    </ul>
-
-    <iframe width="100%" height="200" src="https://www.youtube.com/embed/MUBhIG0XjNQ" frameborder="0" allowfullscreen></iframe>
+    <div id="response-message" style="margin-top: 20px;"></div>
   </div>
 
   <script>
-    const fullName = document.getElementById("fullName");
-    const email = document.getElementById("email");
-    const phone = document.getElementById("phone");
-    const btn = document.getElementById("continueBtn");
+    const form = document.getElementById('signup-form');
+    const responseMessage = document.getElementById('response-message');
 
-    function checkInputs() {
-      if (fullName.value && email.value && phone.value) {
-        btn.disabled = false;
-      } else {
-        btn.disabled = true;
-      }
-    }
-
-    fullName.addEventListener("input", checkInputs);
-    email.addEventListener("input", checkInputs);
-    phone.addEventListener("input", checkInputs);
-
-    document.getElementById("userForm").addEventListener("submit", function(e) {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      // Optional: Save data to localStorage
-      localStorage.setItem("fullName", fullName.value);
-      localStorage.setItem("email", email.value);
-      localStorage.setItem("phone", phone.value);
-      window.location.href = "register.html";
+
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+      };
+
+      // For now, just show the data in responseMessage
+      responseMessage.textContent = `תודה ${data.name}! הטופס נשלח בהצלחה. (זוהי הדגמה בלבד)`;
+
+      // TODO: Add actual form submission logic here (e.g., POST to backend or Firebase)
+      
+      form.reset();
     });
   </script>
 </body>
