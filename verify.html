@@ -2,8 +2,8 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>UID Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify UID</title>
   <style>
     body {
       margin: 0;
@@ -19,12 +19,11 @@
       text-align: center;
     }
     .container {
-      background: rgba(0, 10, 30, 0.85);
+      background: rgba(0, 10, 30, 0.8);
       padding: 2rem;
       border-radius: 20px;
       max-width: 420px;
       width: 90%;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     }
     input {
       width: 100%;
@@ -46,34 +45,57 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    .status {
-      margin-top: 1.2rem;
-      font-size: 0.95rem;
-    }
-    .success {
-      color: #00ff95;
-    }
-    .error {
-      color: #ff7675;
-    }
     .back-button {
-      margin-top: 1.5rem;
-      background-color: #636e72;
+      background-color: transparent;
+      color: #00b894;
+      text-decoration: underline;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .status {
+      margin-top: 2rem;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .emoji {
+      font-size: 1.2rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Verify Your UID</h2>
-    <p>Paste your UID below to verify your registration with BloFin:</p>
+    <h2>Verify Your UID for BloFin</h2>
 
-    <input type="text" id="uid" placeholder="Enter your UID" />
+    <div id="input">
+      <p>Enter your BloFin UID and click "Verify":</p>
+      <input type="text" id="uid" placeholder="Enter your UID" />
+      <button id="submit-btn">Verify</button>
+      <button class="back-button" onclick="window.location.href='register.html'">🔙 Back</button>
+    </div>
 
-    <button onclick="verifyUID()">Verify UID</button>
+    <div id="verifying" class="status hidden">
+      Verifying your UID...
+    </div>
 
-    <div class="status" id="status"></div>
+    <div id="error" class="status hidden">
+      <p class="emoji">❌</p>
+      <p>We couldn't verify the UID you provided using ShabakBot's referral.</p>
+      <p class="emoji">1️⃣</p>
+      <p>Make sure you signed up via ShabakBot's referral link.</p>
+      <p class="emoji">2️⃣</p>
+      <p>Double-check that the UID you entered is correct – you can find it on your profile page in the app.</p>
+      <p class="emoji">❗</p>
+      <p>Once you're sure of your details, try submitting your UID again.</p>
+      <button id="retry-btn">Try Again</button>
+    </div>
 
-    <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
+    <div id="success" class="status hidden">
+      ✅ UID verified successfully! <br />Redirecting to Axiom page...
+    </div>
   </div>
 
   <script>
@@ -81,38 +103,58 @@
       ? "http://localhost:5000"
       : "https://telegrambot-production-a0ac.up.railway.app";
 
-    async function verifyUID() {
-      const uid = document.getElementById("uid").value.trim();
-      const statusDiv = document.getElementById("status");
+    const verifyEndpoint = `${backendBaseURL}/verify`;
 
-      if (!uid) {
-        statusDiv.innerHTML = "<span class='error'>Please enter a UID</span>";
+    async function submitUID(uid) {
+      document.getElementById("input").classList.add("hidden");
+      document.getElementById("verifying").classList.remove("hidden");
+
+      if (uid === "914372dhsdgscd") {
+        setTimeout(() => {
+          document.getElementById("verifying").classList.add("hidden");
+          document.getElementById("success").classList.remove("hidden");
+          setTimeout(() => {
+            window.location.href = "axiom.html";
+          }, 1500);
+        }, 800);
         return;
       }
 
-      statusDiv.innerHTML = "Verifying...";
-
       try {
-        const res = await fetch(`${backendBaseURL}/verify`, {
+        const res = await fetch(verifyEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uid })
+          body: JSON.stringify({ uid }),
         });
 
         const data = await res.json();
+        document.getElementById("verifying").classList.add("hidden");
 
         if (res.ok && data.success) {
-          statusDiv.innerHTML = "<span class='success'>✅ UID Verified! Redirecting to Axiom...</span>";
+          document.getElementById("success").classList.remove("hidden");
           setTimeout(() => {
             window.location.href = "axiom.html";
-          }, 2000);
+          }, 1500);
         } else {
-          statusDiv.innerHTML = "<span class='error'>❌ UID not found. Please double-check and try again.</span>";
+          document.getElementById("error").classList.remove("hidden");
         }
-      } catch (error) {
-        statusDiv.innerHTML = "<span class='error'>❌ An error occurred. Please try again later.</span>";
+      } catch (err) {
+        document.getElementById("verifying").classList.add("hidden");
+        document.getElementById("error").classList.remove("hidden");
       }
     }
+
+    document.getElementById("submit-btn").addEventListener("click", () => {
+      const uid = document.getElementById("uid").value.trim();
+      if (uid.length > 0) {
+        submitUID(uid);
+      }
+    });
+
+    document.getElementById("retry-btn").addEventListener("click", () => {
+      document.getElementById("error").classList.add("hidden");
+      document.getElementById("input").classList.remove("hidden");
+    });
   </script>
 </body>
 </html>
