@@ -11,6 +11,9 @@
       font-family: sans-serif;
       text-align: center;
       padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      display: none; /* hidden until Telegram WebApp is validated */
     }
     input {
       padding: 12px;
@@ -35,15 +38,37 @@
 <body>
   <h2>אמת את ה-UID שלך</h2>
   <input type="text" id="uid" placeholder="הכנס UID כאן" />
-
   <br/>
-  <button class="button" onclick="verifyUID()">אימות</button>
+  <button class="button" id="verifyBtn" onclick="verifyUID()">אימות</button>
   <button class="button" onclick="goBack()">⬅ חזור</button>
 
   <script>
+    // Telegram WebApp context validation
+    window.addEventListener("DOMContentLoaded", () => {
+      const tg = window.Telegram?.WebApp;
+
+      if (!tg || !tg.initData || tg.initData.length < 1) {
+        alert("❌ Authentication failed.\nאנא פתח את הקישור מתוך אפליקציית טלגרם בלבד.");
+        document.body.innerHTML = `
+          <h2 style="color: red;">שגיאת אימות</h2>
+          <p>יש להפעיל את העמוד מתוך אפליקציית טלגרם.</p>
+        `;
+        return;
+      }
+
+      tg.ready(); // Tell Telegram we're ready
+      document.body.style.display = "block"; // Reveal content
+    });
+
     async function verifyUID() {
-      const uid = document.getElementById('uid').value;
+      const uid = document.getElementById('uid').value.trim();
+      const button = document.getElementById('verifyBtn');
+
       if (!uid) return alert('נא להזין UID');
+      if (!/^\d+$/.test(uid)) return alert('ה-UID צריך להכיל רק ספרות');
+
+      button.disabled = true;
+      button.textContent = 'מאמת...';
 
       try {
         const res = await fetch('https://telegrambot-production-a0ac.up.railway.app/verify', {
@@ -56,6 +81,9 @@
         alert(data.message || 'התשובה התקבלה');
       } catch (err) {
         alert('שגיאה באימות. נסה שוב.');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'אימות';
       }
     }
 
