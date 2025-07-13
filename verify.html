@@ -1,80 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verify UID</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0c1e3a;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 20px;
-      width: 100%;
-      max-width: 300px;
-      text-align: center;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 16px;
-      background-color: #1e90ff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      max-width: 300px;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shabak Bot - Verify UID</title>
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the background pattern */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c1e3a; /* Dark blue background */
+            color: #ffffff; /* White text */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            overflow: hidden; /* Prevent scroll for background */
+        }
+
+        /* Repeating background pattern of pickaxes and gems */
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1; /* Subtle overlay */
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239CA3AF' fill-opacity='0.2'%3E%3Cpath d='M0 0h20v20H0zM20 20h20v20H20z'/%3E%3Cpath d='M10 0h10v10H10zM0 10h10v10H0zM30 0h10v10H30zM20 10h10v10H20zM10 20h10v10H10zM0 30h10v10H0zM30 20h10v10H30zM20 30h10v10H20z'/%3E%3Cpath d='M15 5h10v10H15zM5 15h10v10H5zM35 5h10v10H35zM25 15h10v10H25zM15 25h10v10H15zM5 35h10v10H5zM35 25h10v10H35zM25 35h10v10H25z'/%3E%3Cpath d='M5 5h10v10H5zM15 15h10v10H15zM25 5h10v10H25zM5 25h10v10H5zM15 35h10v10H15zM25 15h10v10H25zM35 25h10v10H35zM35 35h10v10H35z'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 40px 40px;
+            z-index: -1; /* Ensure it stays behind content */
+        }
+    </style>
 </head>
 <body>
-  <h2>Verify your UID</h2>
-  <input type="text" id="uid" placeholder="Enter UID here" />
-  <button onclick="verifyUID()">Verify UID</button>
-  <div id="result"></div>
+    <!-- Background pattern overlay -->
+    <div class="background-pattern"></div>
 
-  <script>
-    async function verifyUID() {
-      const uid = document.getElementById("uid").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerText = "Checking...";
+    <!-- Main container for the app -->
+    <div class="flex flex-col items-center justify-center min-h-screen w-full p-4 sm:p-6">
+        <!-- Application Card -->
+        <div class="bg-blue-900 rounded-xl shadow-2xl overflow-hidden max-w-md w-full border border-blue-700">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 bg-blue-800/70 rounded-t-xl border-b border-blue-700">
+                <button class="text-blue-300 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold text-white">Shabak Bot</h1>
+                <div class="flex space-x-3">
+                    <button class="text-blue-300 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
+                    </button>
+                    <button class="text-blue-300 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-      try {
-        const response = await fetch("https://telegrambot-production-a0ac.up.railway.app/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uid: uid }),
-        });
+            <!-- Main content area -->
+            <div class="p-6">
+                <!-- Input Section -->
+                <div id="input-section">
+                    <h3 class="text-lg font-semibold mb-4 text-center text-blue-200">Input Your BloFin User ID</h3>
+                    <input type="text" id="uid-input" placeholder="Enter your user ID"
+                           class="w-full p-3 rounded-lg bg-blue-700 text-white placeholder-blue-300
+                                  focus:outline-none focus:ring-2 focus:ring-blue-400 mb-6 text-center
+                                  shadow-inner border border-blue-600">
+                    <button id="verify-button" onclick="verifyUID()"
+                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
+                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
+                                   focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        Verify
+                    </button>
+                </div>
 
-        const data = await response.json();
+                <!-- Verifying State -->
+                <div id="verifying-section" class="hidden text-center p-4">
+                    <svg class="mx-auto h-16 w-16 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <p class="text-xl font-semibold mt-4 text-blue-100">VERIFYING...</p>
+                    <p class="text-sm text-blue-300 mt-2">Please wait while we verify you. This might take a moment.</p>
+                    <button class="w-full py-3 rounded-lg bg-blue-700 text-white font-bold text-lg shadow-md
+                                   mt-6 cursor-not-allowed opacity-70" disabled>
+                        Verifying...
+                    </button>
+                </div>
 
-        if (data.found) {
-          resultDiv.innerText = "✅ UID verified successfully!";
-        } else {
-          resultDiv.innerText = "❌ UID not found. Please make sure you registered through the referral link.";
+                <!-- Error State -->
+                <div id="error-section" class="hidden p-4">
+                    <div class="flex items-center text-red-400 mb-4">
+                        <svg class="h-7 w-7 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2A9 9 0 111 10a9 9 0 0118 0z" />
+                        </svg>
+                        <p class="font-semibold text-lg">Could not verify the provided UID with Shabak Bot referral link</p>
+                    </div>
+                    <ul class="list-none space-y-3 text-sm text-blue-200 mb-6">
+                        <li class="flex items-start">
+                            <span class="mr-2 text-blue-400 font-bold">1</span>
+                            <span>Ensure that you have signed up using the <a href="https://partner.blofin.com/d/shabak" target="_blank" class="text-blue-400 font-medium hover:underline">Shabak Bot Referral Link</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-blue-400 font-bold">2</span>
+                            <span>Verify that you have entered the correct UID, which can be found on your profile page</span>
+                        </li>
+                    </ul>
+                    <p class="text-sm text-yellow-300 mb-2">
+                        <span class="font-bold mr-1">!</span> NOTE: Once you have checked and are certain of the above conditions, please re-enter your Blofin UID.
+                    </p>
+                    <p class="text-sm text-yellow-300 mb-6">
+                        <span class="font-bold mr-1">!</span> Note: If the issue persists, please don't hesitate to reach out to us at
+                    </p>
+                    <a href="mailto:support@gemhunters.com" class="text-blue-400 hover:underline text-center block text-base font-medium">support@gemhunters.com</a>
+                    <button onclick="resetUI()"
+                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
+                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
+                                   focus:outline-none focus:ring-2 focus:ring-blue-400 mt-6">
+                        Try Again
+                    </button>
+                </div>
+
+                <!-- Success State (Assumed based on original code's success message) -->
+                <div id="success-section" class="hidden text-center p-4">
+                    <svg class="mx-auto h-16 w-16 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-xl font-semibold mt-4 text-green-100">✅ UID verified successfully!</p>
+                    <button onclick="resetUI()"
+                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
+                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
+                                   focus:outline-none focus:ring-2 focus:ring-blue-400 mt-6">
+                        Verify Another UID
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-xs text-blue-300 mt-6">
+            @ShabakBot
+        </div>
+    </div>
+
+    <script>
+        // Function to show a specific section and hide others
+        function showSection(sectionId) {
+            const sections = ['input-section', 'verifying-section', 'error-section', 'success-section'];
+            sections.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
         }
-      } catch (error) {
-        resultDiv.innerText = "⚠️ Verification failed. Please try again later.";
-      }
-    }
-  </script>
+
+        // Function to reset the UI to the initial input state
+        function resetUI() {
+            document.getElementById("uid-input").value = ""; // Clear input field
+            showSection('input-section');
+        }
+
+        // Asynchronous function to handle UID verification
+        async function verifyUID() {
+            const uidInput = document.getElementById("uid-input");
+            const uid = uidInput.value.trim();
+
+            // Show the verifying state immediately
+            showSection('verifying-section');
+
+            try {
+                // Make the API call to your backend
+                const response = await fetch("https://telegrambot-production-a0ac.up.railway.app/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ uid: uid }),
+                });
+
+                // Parse the JSON response
+                const data = await response.json();
+
+                // Check the 'found' status from the response
+                if (data.found) {
+                    showSection('success-section'); // Show success message
+                } else {
+                    showSection('error-section'); // Show error message
+                }
+            } catch (error) {
+                // Log the error for debugging purposes
+                console.error("Verification failed:", error);
+                // Show the error message if the fetch operation fails
+                showSection('error-section');
+                // For this example, we'll use the existing error message structure.
+            }
+        }
+
+        // Initialize the UI to the input section when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('input-section');
+        });
+    </script>
 </body>
 </html>
