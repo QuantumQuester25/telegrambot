@@ -24,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         keyboard = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot2797.vercel.app"))]]
+            [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot-swart.vercel.app/"))]]
         )
         await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
     except Exception as e:
