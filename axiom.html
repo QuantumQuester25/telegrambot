@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axiom Registration</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://i.ibb.co/Rwmb3GC/bg.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .container {
+      background: rgba(0, 10, 30, 0.85);
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      background-color: #0b1d3a;
+      color: #fff;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #00b894;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+    .back-button {
+      margin-top: 1.5rem;
+      background-color: #636e72;
+    }
+    .status {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Register for Axiom</h2>
+    <p>Please fill in your contact details and click the sign-up button:</p>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="tel" id="phone" placeholder="Phone Number">
+
+    <a href="https://axiom.trade/@shabak" target="_blank">
+      <button id="signupBtn">🔗 Go to Axiom Registration</button>
+    </a>
+
+    <button id="verifyBtn" disabled>✅ Verify Registration</button>
+
+    <div class="status" id="statusMessage"></div>
+
+    <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
+  </div>
+
+  <script>
+    const verifyBtn = document.getElementById("verifyBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const statusMessage = document.getElementById("statusMessage");
+
+    signupBtn.addEventListener("click", () => {
+      setTimeout(() => {
+        verifyBtn.disabled = false;
+        statusMessage.innerText = "After registering, click Verify to continue.";
+      }, 1000);
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!name || !email || !phone) {
+        statusMessage.innerText = "Please fill in all details before verification.";
+        return;
+      }
+
+      statusMessage.innerText = "✅ Details saved. We'll manually check the registration.";
+    });
+  </script>
+</body>
+</html>
