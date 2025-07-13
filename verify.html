@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>UID Verification</title>
   <style>
     body {
@@ -24,6 +24,7 @@
       border-radius: 20px;
       max-width: 420px;
       width: 90%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     }
     input {
       width: 100%;
@@ -45,48 +46,34 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    .hidden {
-      display: none;
-    }
     .status {
-      margin-top: 2rem;
-      font-size: 1rem;
-      line-height: 1.6;
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
     }
-    .emoji {
-      font-size: 1.2rem;
+    .success {
+      color: #00ff95;
+    }
+    .error {
+      color: #ff7675;
+    }
+    .back-button {
+      margin-top: 1.5rem;
+      background-color: #636e72;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>BloFin UID Verification</h2>
+    <h2>Verify Your UID</h2>
+    <p>Paste your UID below to verify your registration with BloFin:</p>
 
-    <div id="input">
-      <p>Enter your UID from the BloFin app and click "Verify":</p>
-      <input type="text" id="uid" placeholder="Enter UID here" />
-      <button id="submit-btn">Verify</button>
-    </div>
+    <input type="text" id="uid" placeholder="Enter your UID" />
 
-    <div id="verifying" class="status hidden">
-      Verifying your UID...
-    </div>
+    <button onclick="verifyUID()">Verify UID</button>
 
-    <div id="error" class="status hidden">
-      <p class="emoji">❌</p>
-      <p>We couldn’t verify your UID with the ShabakBot referral link.</p>
-      <p class="emoji">1️⃣</p>
-      <p>Make sure you registered using the official ShabakBot referral link.</p>
-      <p class="emoji">2️⃣</p>
-      <p>Double-check your UID — it’s available on your profile page in the BloFin app.</p>
-      <p class="emoji">❗</p>
-      <p>Once confirmed, try again.</p>
-      <button id="retry-btn">Try Again</button>
-    </div>
+    <div class="status" id="status"></div>
 
-    <div id="success" class="status hidden">
-      ✅ UID verified successfully!<br />You may now return to the bot.
-    </div>
+    <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
   </div>
 
   <script>
@@ -94,54 +81,38 @@
       ? "http://localhost:5000"
       : "https://telegrambot-production-a0ac.up.railway.app";
 
-    const verifyEndpoint = `${backendBaseURL}/verify`;
-    const bypassUIDs = ["12345678", "87654321"]; // Test UIDs that will auto-pass
+    async function verifyUID() {
+      const uid = document.getElementById("uid").value.trim();
+      const statusDiv = document.getElementById("status");
 
-    async function submitUID(uid) {
-      document.getElementById("input").classList.add("hidden");
-      document.getElementById("verifying").classList.remove("hidden");
-
-      // ✅ Bypass logic
-      if (bypassUIDs.includes(uid)) {
-        setTimeout(() => {
-          document.getElementById("verifying").classList.add("hidden");
-          document.getElementById("success").classList.remove("hidden");
-        }, 1000);
+      if (!uid) {
+        statusDiv.innerHTML = "<span class='error'>Please enter a UID</span>";
         return;
       }
 
+      statusDiv.innerHTML = "Verifying...";
+
       try {
-        const res = await fetch(verifyEndpoint, {
+        const res = await fetch(`${backendBaseURL}/verify`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uid }),
+          body: JSON.stringify({ uid })
         });
 
         const data = await res.json();
-        document.getElementById("verifying").classList.add("hidden");
 
         if (res.ok && data.success) {
-          document.getElementById("success").classList.remove("hidden");
+          statusDiv.innerHTML = "<span class='success'>✅ UID Verified! Redirecting to Axiom...</span>";
+          setTimeout(() => {
+            window.location.href = "axiom.html";
+          }, 2000);
         } else {
-          document.getElementById("error").classList.remove("hidden");
+          statusDiv.innerHTML = "<span class='error'>❌ UID not found. Please double-check and try again.</span>";
         }
-      } catch (err) {
-        document.getElementById("verifying").classList.add("hidden");
-        document.getElementById("error").classList.remove("hidden");
+      } catch (error) {
+        statusDiv.innerHTML = "<span class='error'>❌ An error occurred. Please try again later.</span>";
       }
     }
-
-    document.getElementById("submit-btn").addEventListener("click", () => {
-      const uid = document.getElementById("uid").value.trim();
-      if (uid.length > 0) {
-        submitUID(uid);
-      }
-    });
-
-    document.getElementById("retry-btn").addEventListener("click", () => {
-      document.getElementById("error").classList.add("hidden");
-      document.getElementById("input").classList.remove("hidden");
-    });
   </script>
 </body>
 </html>
