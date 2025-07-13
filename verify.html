@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>אימות UID</title>
+  <title>Verify UID</title>
   <style>
     body {
       margin: 0;
@@ -60,32 +60,32 @@
 </head>
 <body>
   <div class="container">
-    <h2>אימות UID לחשבון BloFin</h2>
+    <h2>Verify Your UID for BloFin</h2>
 
     <div id="input">
-      <p>הכנס את ה-UID שלך מאפליקציית BloFin ולחץ על "בדוק":</p>
-      <input type="text" id="uid" placeholder="הזן UID כאן" />
-      <button id="submit-btn">בדוק</button>
+      <p>Enter your UID from the BloFin app and click "Check":</p>
+      <input type="text" id="uid" placeholder="Enter UID here" />
+      <button id="submit-btn">Check</button>
     </div>
 
     <div id="verifying" class="status hidden">
-      מאמת UID שלך...
+      Verifying your UID...
     </div>
 
     <div id="error" class="status hidden">
       <p class="emoji">❌</p>
-      <p>לא הצלחנו לאמת את ה-UID שסיפקת עם קישור ההפניה של ShabakBot.</p>
+      <p>We couldn’t verify the UID you entered with the ShabakBot referral link.</p>
       <p class="emoji">1️⃣</p>
-      <p>וודא שנרשמת דרך קישור ההפניה של ShabakBot</p>
+      <p>Make sure you registered through the ShabakBot referral link</p>
       <p class="emoji">2️⃣</p>
-      <p>בדוק שה-UID שהזנת נכון – ניתן למצוא אותו בדף הפרופיל באפליקציה</p>
+      <p>Check that the UID you entered is correct – you can find it in your profile on the BloFin app</p>
       <p class="emoji">❗</p>
-      <p>לאחר שבדקת ואתה בטוח בפרטים, נסה להזין שוב את ה-UID שלך</p>
-      <button id="retry-btn">נסה שוב</button>
+      <p>Once you've confirmed the details, try entering your UID again</p>
+      <button id="retry-btn">Try Again</button>
     </div>
 
     <div id="success" class="status hidden">
-      ✅ UID אומת בהצלחה! <br />תוכל לחזור לבוט.
+      ✅ UID verified successfully! <br />You may return to the bot.
     </div>
   </div>
 
