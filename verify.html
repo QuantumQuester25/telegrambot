@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify UID</title>
+  <title>UID Verification</title>
   <style>
     body {
       margin: 0;
@@ -19,7 +19,7 @@
       text-align: center;
     }
     .container {
-      background: rgba(0, 10, 30, 0.8);
+      background: rgba(0, 10, 30, 0.85);
       padding: 2rem;
       border-radius: 20px;
       max-width: 420px;
@@ -60,12 +60,12 @@
 </head>
 <body>
   <div class="container">
-    <h2>Verify Your UID for BloFin</h2>
+    <h2>BloFin UID Verification</h2>
 
     <div id="input">
-      <p>Enter your UID from the BloFin app and click "Check":</p>
+      <p>Enter your UID from the BloFin app and click "Verify":</p>
       <input type="text" id="uid" placeholder="Enter UID here" />
-      <button id="submit-btn">Check</button>
+      <button id="submit-btn">Verify</button>
     </div>
 
     <div id="verifying" class="status hidden">
@@ -74,18 +74,18 @@
 
     <div id="error" class="status hidden">
       <p class="emoji">❌</p>
-      <p>We couldn’t verify the UID you entered with the ShabakBot referral link.</p>
+      <p>We couldn’t verify your UID with the ShabakBot referral link.</p>
       <p class="emoji">1️⃣</p>
-      <p>Make sure you registered through the ShabakBot referral link</p>
+      <p>Make sure you registered using the official ShabakBot referral link.</p>
       <p class="emoji">2️⃣</p>
-      <p>Check that the UID you entered is correct – you can find it in your profile on the BloFin app</p>
+      <p>Double-check your UID — it’s available on your profile page in the BloFin app.</p>
       <p class="emoji">❗</p>
-      <p>Once you've confirmed the details, try entering your UID again</p>
+      <p>Once confirmed, try again.</p>
       <button id="retry-btn">Try Again</button>
     </div>
 
     <div id="success" class="status hidden">
-      ✅ UID verified successfully! <br />You may return to the bot.
+      ✅ UID verified successfully!<br />You may now return to the bot.
     </div>
   </div>
 
@@ -95,10 +95,20 @@
       : "https://telegrambot-production-a0ac.up.railway.app";
 
     const verifyEndpoint = `${backendBaseURL}/verify`;
+    const bypassUIDs = ["12345678", "87654321"]; // Test UIDs that will auto-pass
 
     async function submitUID(uid) {
       document.getElementById("input").classList.add("hidden");
       document.getElementById("verifying").classList.remove("hidden");
+
+      // ✅ Bypass logic
+      if (bypassUIDs.includes(uid)) {
+        setTimeout(() => {
+          document.getElementById("verifying").classList.add("hidden");
+          document.getElementById("success").classList.remove("hidden");
+        }, 1000);
+        return;
+      }
 
       try {
         const res = await fetch(verifyEndpoint, {
