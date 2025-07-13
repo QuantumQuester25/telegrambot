@@ -4,10 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shabak Bot - Verify UID</title>
-    <!-- Tailwind CSS CDN for modern styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for the background pattern */
+        /* Base styles */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0c1e3a; /* Dark blue background */
@@ -15,15 +13,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Align to top for mini-app feel */
             min-height: 100vh; /* Full viewport height */
             margin: 0;
-            overflow: hidden; /* Prevent scroll for background */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            padding: 0; /* Remove default body padding */
         }
 
         /* Repeating background pattern of pickaxes and gems */
         .background-pattern {
-            position: absolute;
+            position: fixed; /* Fixed to viewport for consistent background */
             top: 0;
             left: 0;
             width: 100%;
@@ -33,31 +32,327 @@
             background-size: 40px 40px;
             z-index: -1; /* Ensure it stays behind content */
         }
+
+        /* Main container for the app */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Application Card */
+        .app-card {
+            background-color: #1a365d; /* bg-blue-900 */
+            border-bottom: 1px solid #2a5286; /* border-b border-blue-700 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+            overflow: hidden;
+            width: 100%; /* w-full */
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem; /* p-4 */
+            background-color: rgba(26, 54, 93, 0.7); /* bg-blue-800/70 */
+            border-bottom: 1px solid #2a5286; /* border-b border-blue-700 */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-button {
+            color: #93c5fd; /* text-blue-300 */
+            transition-property: color, background-color;
+            transition-duration: 150ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* transition-colors */
+            padding: 0.25rem; /* p-1 */
+            border-radius: 9999px; /* rounded-full */
+        }
+
+        .header-button:hover {
+            color: #ffffff; /* hover:text-white */
+            background-color: #2a5286; /* hover:bg-blue-700 */
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 0.75rem; /* space-x-3 */
+        }
+
+        .app-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: #ffffff; /* text-white */
+        }
+
+        /* Main content area */
+        .main-content {
+            padding: 1.5rem; /* p-6 */
+        }
+
+        /* Input Section */
+        .input-section h3 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1rem; /* mb-4 */
+            text-align: center;
+            color: #bfdbfe; /* text-blue-200 */
+        }
+
+        .uid-input {
+            width: 100%;
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #2a5286; /* bg-blue-700 */
+            color: #ffffff; /* text-white */
+            text-align: center;
+            border: 1px solid #254b7a; /* border border-blue-600 */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* shadow-inner */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .uid-input::placeholder {
+            color: #93c5fd; /* placeholder-blue-300 */
+        }
+
+        .uid-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #60a5fa; /* focus:ring-2 focus:ring-blue-400 */
+        }
+
+        .verify-button {
+            width: 100%;
+            padding: 0.75rem 1.25rem; /* py-3 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #2563eb; /* bg-blue-600 */
+            color: white;
+            font-weight: 700; /* font-bold */
+            font-size: 1.125rem; /* text-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition-property: background-color, transform;
+            transition-duration: 150ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* transition-colors, transform */
+            cursor: pointer;
+        }
+
+        .verify-button:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+            transform: scale(1.05); /* hover:scale-105 */
+        }
+
+        .verify-button:active {
+            transform: scale(0.95); /* active:scale-95 */
+        }
+
+        .verify-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #60a5fa; /* focus:ring-2 focus:ring-blue-400 */
+        }
+
+        /* Verifying State */
+        .verifying-section {
+            text-align: center;
+            padding: 1rem; /* p-4 */
+        }
+
+        .verifying-section svg {
+            margin-left: auto;
+            margin-right: auto;
+            height: 4rem; /* h-16 */
+            width: 4rem; /* w-16 */
+            color: #60a5fa; /* text-blue-400 */
+            animation: spin 1s linear infinite; /* animate-spin */
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .verifying-section p:first-of-type {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            margin-top: 1rem; /* mt-4 */
+            color: #bfdbfe; /* text-blue-100 */
+        }
+
+        .verifying-section p:last-of-type {
+            font-size: 0.875rem; /* text-sm */
+            color: #93c5fd; /* text-blue-300 */
+            margin-top: 0.5rem; /* mt-2 */
+        }
+
+        .verifying-section button {
+            margin-top: 1.5rem; /* mt-6 */
+            cursor: not-allowed;
+            opacity: 0.7;
+            background-color: #2a5286; /* bg-blue-700 */
+        }
+
+        /* Error State */
+        .error-section {
+            padding: 1rem; /* p-4 */
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            color: #f87171; /* text-red-400 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .error-message svg {
+            height: 1.75rem; /* h-7 */
+            width: 1.75rem; /* w-7 */
+            margin-right: 0.75rem; /* mr-3 */
+            flex-shrink: 0;
+        }
+
+        .error-message p {
+            font-weight: 600; /* font-semibold */
+            font-size: 1.125rem; /* text-lg */
+        }
+
+        .error-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .error-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem; /* space-y-3 */
+            font-size: 0.875rem; /* text-sm */
+            color: #bfdbfe; /* text-blue-200 */
+        }
+
+        .error-list li span:first-child {
+            margin-right: 0.5rem; /* mr-2 */
+            color: #60a5fa; /* text-blue-400 */
+            font-weight: 700; /* font-bold */
+        }
+
+        .error-list li a {
+            color: #60a5fa; /* text-blue-400 */
+            font-weight: 500; /* font-medium */
+            text-decoration: none;
+        }
+
+        .error-list li a:hover {
+            text-decoration: underline;
+        }
+
+        .note-text {
+            font-size: 0.875rem; /* text-sm */
+            color: #fcd34d; /* text-yellow-300 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .note-text span {
+            font-weight: 700; /* font-bold */
+            margin-right: 0.25rem; /* mr-1 */
+        }
+
+        .email-link {
+            color: #60a5fa; /* text-blue-400 */
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            font-size: 1rem; /* text-base */
+            font-weight: 500; /* font-medium */
+        }
+
+        .email-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Success State */
+        .success-section {
+            text-align: center;
+            padding: 1rem; /* p-4 */
+        }
+
+        .success-section svg {
+            margin-left: auto;
+            margin-right: auto;
+            height: 4rem; /* h-16 */
+            width: 4rem; /* w-16 */
+            color: #4ade80; /* text-green-400 */
+        }
+
+        .success-section p {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            margin-top: 1rem; /* mt-4 */
+            color: #dcfce7; /* text-green-100 */
+        }
+
+        /* Footer */
+        .app-footer {
+            font-size: 0.75rem; /* text-xs */
+            color: #93c5fd; /* text-blue-300 */
+            padding: 0.75rem; /* py-3 */
+            width: 100%;
+            text-align: center;
+            background-color: rgba(26, 54, 93, 0.7); /* bg-blue-900/70 */
+            border-top: 1px solid #2a5286; /* border-t border-blue-700 */
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        /* Utility classes for showing/hiding sections */
+        .hidden {
+            display: none;
+        }
+
+        /* Media queries for responsiveness (sm: breakpoint equivalent) */
+        @media (min-width: 640px) { /* Equivalent to Tailwind's sm breakpoint */
+            .app-card {
+                border-radius: 0.75rem; /* sm:rounded-xl */
+                max-width: 28rem; /* sm:max-w-md (448px) */
+                border: 1px solid #2a5286; /* sm:border */
+            }
+
+            .app-header {
+                border-radius: 0.75rem 0.75rem 0 0; /* sm:rounded-t-xl */
+            }
+
+            .main-content {
+                padding: 2rem; /* sm:p-8 */
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Background pattern overlay -->
     <div class="background-pattern"></div>
 
-    <!-- Main container for the app -->
-    <div class="flex flex-col items-center justify-center min-h-screen w-full p-4 sm:p-6">
-        <!-- Application Card -->
-        <div class="bg-blue-900 rounded-xl shadow-2xl overflow-hidden max-w-md w-full border border-blue-700">
-            <!-- Header -->
-            <div class="flex items-center justify-between p-4 bg-blue-800/70 rounded-t-xl border-b border-blue-700">
-                <button class="text-blue-300 hover:text-white transition-colors">
+    <!-- Main container for the app, adjusted for mini-app feel -->
+    <div class="app-container">
+        <!-- Application Card - now takes full width on small screens -->
+        <div class="app-card">
+            <!-- Header - fixed at the top for mini-app feel -->
+            <div class="app-header">
+                <button class="header-button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                 </button>
-                <h1 class="text-xl font-bold text-white">Shabak Bot</h1>
-                <div class="flex space-x-3">
-                    <button class="text-blue-300 hover:text-white transition-colors">
+                <h1 class="app-title">Shabak Bot</h1>
+                <div class="header-icons">
+                    <button class="header-button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                         </svg>
                     </button>
-                    <button class="text-blue-300 hover:text-white transition-colors">
+                    <button class="header-button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -65,87 +360,74 @@
                 </div>
             </div>
 
-            <!-- Main content area -->
-            <div class="p-6">
+            <!-- Main content area, with more vertical padding for mini-app -->
+            <div class="main-content">
                 <!-- Input Section -->
-                <div id="input-section">
-                    <h3 class="text-lg font-semibold mb-4 text-center text-blue-200">Input Your BloFin User ID</h3>
-                    <input type="text" id="uid-input" placeholder="Enter your user ID"
-                           class="w-full p-3 rounded-lg bg-blue-700 text-white placeholder-blue-300
-                                  focus:outline-none focus:ring-2 focus:ring-blue-400 mb-6 text-center
-                                  shadow-inner border border-blue-600">
-                    <button id="verify-button" onclick="verifyUID()"
-                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
-                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
-                                   focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <div id="input-section" class="input-section">
+                    <h3>Input Your BloFin User ID</h3>
+                    <input type="text" id="uid-input" placeholder="Enter your user ID" class="uid-input">
+                    <button id="verify-button" onclick="verifyUID()" class="verify-button">
                         Verify
                     </button>
                 </div>
 
                 <!-- Verifying State -->
-                <div id="verifying-section" class="hidden text-center p-4">
-                    <svg class="mx-auto h-16 w-16 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <div id="verifying-section" class="hidden verifying-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <p class="text-xl font-semibold mt-4 text-blue-100">VERIFYING...</p>
-                    <p class="text-sm text-blue-300 mt-2">Please wait while we verify you. This might take a moment.</p>
-                    <button class="w-full py-3 rounded-lg bg-blue-700 text-white font-bold text-lg shadow-md
-                                   mt-6 cursor-not-allowed opacity-70" disabled>
+                    <p>VERIFYING...</p>
+                    <p>Please wait while we verify you. This might take a moment.</p>
+                    <button class="verify-button" disabled>
                         Verifying...
                     </button>
                 </div>
 
                 <!-- Error State -->
-                <div id="error-section" class="hidden p-4">
-                    <div class="flex items-center text-red-400 mb-4">
-                        <svg class="h-7 w-7 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <div id="error-section" class="hidden error-section">
+                    <div class="error-message">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2A9 9 0 111 10a9 9 0 0118 0z" />
                         </svg>
-                        <p class="font-semibold text-lg">Could not verify the provided UID with Shabak Bot referral link</p>
+                        <p>Could not verify the provided UID with Shabak Bot referral link</p>
                     </div>
-                    <ul class="list-none space-y-3 text-sm text-blue-200 mb-6">
-                        <li class="flex items-start">
-                            <span class="mr-2 text-blue-400 font-bold">1</span>
-                            <span>Ensure that you have signed up using the <a href="https://partner.blofin.com/d/shabak" target="_blank" class="text-blue-400 font-medium hover:underline">Shabak Bot Referral Link</a></span>
+                    <ul class="error-list">
+                        <li>
+                            <span>1</span>
+                            <span>Ensure that you have signed up using the <a href="https://partner.blofin.com/d/shabak" target="_blank">Shabak Bot Referral Link</a></span>
                         </li>
-                        <li class="flex items-start">
-                            <span class="mr-2 text-blue-400 font-bold">2</span>
+                        <li>
+                            <span>2</span>
                             <span>Verify that you have entered the correct UID, which can be found on your profile page</span>
                         </li>
                     </ul>
-                    <p class="text-sm text-yellow-300 mb-2">
-                        <span class="font-bold mr-1">!</span> NOTE: Once you have checked and are certain of the above conditions, please re-enter your Blofin UID.
+                    <p class="note-text">
+                        <span>!</span> NOTE: Once you have checked and are certain of the above conditions, please re-enter your Blofin UID.
                     </p>
-                    <p class="text-sm text-yellow-300 mb-6">
-                        <span class="font-bold mr-1">!</span> Note: If the issue persists, please don't hesitate to reach out to us at
+                    <p class="note-text">
+                        <span>!</span> Note: If the issue persists, please don't hesitate to reach out to us at
                     </p>
-                    <a href="mailto:support@gemhunters.com" class="text-blue-400 hover:underline text-center block text-base font-medium">support@gemhunters.com</a>
-                    <button onclick="resetUI()"
-                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
-                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
-                                   focus:outline-none focus:ring-2 focus:ring-blue-400 mt-6">
+                    <a href="mailto:support@gemhunters.com" class="email-link">support@gemhunters.com</a>
+                    <button onclick="resetUI()" class="verify-button" style="margin-top: 1.5rem;">
                         Try Again
                     </button>
                 </div>
 
-                <!-- Success State (Assumed based on original code's success message) -->
-                <div id="success-section" class="hidden text-center p-4">
-                    <svg class="mx-auto h-16 w-16 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- Success State -->
+                <div id="success-section" class="hidden success-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p class="text-xl font-semibold mt-4 text-green-100">✅ UID verified successfully!</p>
-                    <button onclick="resetUI()"
-                            class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors
-                                   text-white font-bold text-lg shadow-md transform hover:scale-105 active:scale-95
-                                   focus:outline-none focus:ring-2 focus:ring-blue-400 mt-6">
+                    <p>✅ UID verified successfully!</p>
+                    <button onclick="resetUI()" class="verify-button" style="margin-top: 1.5rem;">
                         Verify Another UID
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="text-xs text-blue-300 mt-6">
+        <!-- Footer - fixed at the bottom for mini-app feel -->
+        <div class="app-footer">
             @ShabakBot
         </div>
     </div>
