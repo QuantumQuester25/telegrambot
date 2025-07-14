@@ -55,6 +55,7 @@
       text-decoration: none;
       display: block;
       margin-top: 10px;
+      cursor: pointer;
     }
 
     .signup-button:hover {
@@ -68,18 +69,18 @@
       border-radius: 8px;
       font-weight: bold;
       text-align: center;
-      cursor: pointer;
+      cursor: not-allowed;
       border: none;
       width: 100%;
       margin-top: 10px;
+      opacity: 0.5;
+      pointer-events: none;
     }
 
-    .emoji {
-      margin-right: 6px;
-    }
-
-    a {
-      text-decoration: none;
+    .verify-button.active {
+      cursor: pointer;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     ul.steps-list {
@@ -91,6 +92,10 @@
 
     ul.steps-list li {
       margin-bottom: 8px;
+    }
+
+    a {
+      text-decoration: none;
     }
   </style>
 </head>
@@ -110,19 +115,18 @@
     <div class="section">
       <h2>Sign up to BloFin</h2>
       <p>Register using the link below to get your UID – you’ll need it in the next step to verify:</p>
-      <a class="signup-button" href="https://blofin.com/invite/shabak?redirect=" target="_blank">
+      <a class="signup-button" id="signupBtn" href="https://blofin.com/invite/shabak?redirect=" target="_blank">
         👉 Sign Up to BloFin
       </a>
     </div>
 
     <div class="section">
       <p>Already signed up? Click below 👇</p>
-      <button class="verify-button" onclick="goToVerify()">
+      <button class="verify-button" id="verifyBtn" onclick="goToVerify()" disabled>
         ✅ Verify UID
       </button>
     </div>
 
-    <!-- ✅ Steps Section Added -->
     <div class="section">
       <h2>📝 Next Steps After Verification</h2>
       <ul class="steps-list">
@@ -142,6 +146,17 @@
     function goToVerify() {
       window.location.href = "verify.html";
     }
+
+    // Unlock verify button after signup clicked
+    const signupBtn = document.getElementById("signupBtn");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    signupBtn.addEventListener("click", () => {
+      setTimeout(() => {
+        verifyBtn.classList.add("active");
+        verifyBtn.disabled = false;
+      }, 200); // slight delay for natural feel
+    });
   </script>
 </body>
 </html>
