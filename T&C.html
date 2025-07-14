@@ -43,11 +43,6 @@
       font-size: 1rem;
       cursor: pointer;
     }
-
-    button:disabled {
-      background-color: #555;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
@@ -59,18 +54,11 @@
         Terms & Conditions
       </a>.
     </p>
-    <button id="continueBtn" disabled>Continue to Telegram</button>
+    <button id="continueBtn">Continue to Telegram</button>
   </div>
 
   <script>
-    const termsLink = document.getElementById("termsLink");
-    const continueBtn = document.getElementById("continueBtn");
-
-    termsLink.addEventListener("click", () => {
-      continueBtn.disabled = false;
-    });
-
-    continueBtn.addEventListener("click", () => {
+    document.getElementById("continueBtn").addEventListener("click", () => {
       window.location.href = "https://t.me/shabakfree";
     });
   </script>
