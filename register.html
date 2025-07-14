@@ -81,6 +81,17 @@
     a {
       text-decoration: none;
     }
+
+    ul.steps-list {
+      font-size: 14px;
+      padding-left: 18px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    ul.steps-list li {
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
@@ -107,8 +118,20 @@
     <div class="section">
       <p>Already signed up? Click below 👇</p>
       <button class="verify-button" onclick="goToVerify()">
-        Verify UID
+        ✅ Verify UID
       </button>
+    </div>
+
+    <!-- ✅ Steps Section Added -->
+    <div class="section">
+      <h2>📝 Next Steps After Verification</h2>
+      <ul class="steps-list">
+        <li>🔐 Step 1: Enter your name, email, and phone (privately stored)</li>
+        <li>🧾 Step 2: Register with Axiom to access premium signals</li>
+        <li>📊 Step 3: Get added to our exclusive crypto group</li>
+        <li>🎯 Step 4: Start receiving signals and trading with the community</li>
+        <li>🎥 Step 5: Watch our short video tutorial for extra help</li>
+      </ul>
     </div>
 
   </div>
