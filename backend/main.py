@@ -42,7 +42,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = InlineKeyboardMarkup(
             [[
                 InlineKeyboardButton(
-                    "🚀 פתח את אפליקציית Gem Hunters",
+                    "🚀 פתח את אפליקציית Shabak Bot",
                     web_app=WebAppInfo(url="https://telegrambot-swart.vercel.app/")
                 )
             ]]
