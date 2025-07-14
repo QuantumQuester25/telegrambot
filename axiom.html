@@ -121,9 +121,24 @@
       font-size: 0.9rem;
       color: #ccc;
     }
+
+    #hiddenInput {
+      position: absolute;
+      opacity: 0;
+      height: 0;
+      z-index: -1;
+    }
+
+    ol {
+      padding-left: 1.2rem;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Hidden input for iOS keyboard dismiss -->
+  <input type="text" id="hiddenInput">
 
   <!-- BloFin Registration Video Box -->
   <div class="blofin-box">
@@ -154,24 +169,47 @@
     <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
   </div>
 
+  <!-- Axiom Steps Section -->
+  <div class="container" style="margin-top: 2rem; background-color: rgba(0, 10, 30, 0.8);">
+    <h2>📝 Axiom Registration Steps</h2>
+    <ol style="color: #ccc;">
+      <li>Click on <strong>🔗 Go to Axiom Registration</strong> button above.</li>
+      <li>Complete your account sign-up on Axiom website.</li>
+      <li>Use the same Email and Phone number as you entered above.</li>
+      <li>Once registered, return here and click on <strong>✅ Verify Registration</strong>.</li>
+      <li>You will be redirected to Terms & Conditions.</li>
+    </ol>
+    <p style="color: #aaa; font-size: 0.9rem; margin-top: 1rem;">
+      Make sure to complete all steps to get access to Airdrop and Community tools.
+    </p>
+  </div>
+
+  <!-- JS Script -->
   <script>
     const verifyBtn = document.getElementById("verifyBtn");
     const signupBtn = document.getElementById("signupBtn");
     const statusMessage = document.getElementById("statusMessage");
+
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
     const phoneInput = document.getElementById("phone");
+    const hiddenInput = document.getElementById("hiddenInput");
 
-    // ✅ Blur inputs to hide keyboard
+    // Hide keyboard (iOS + Android)
     function blurInputs() {
-      nameInput.blur();
-      emailInput.blur();
-      phoneInput.blur();
+      setTimeout(() => {
+        nameInput.blur();
+        emailInput.blur();
+        phoneInput.blur();
+        hiddenInput.focus();
+        setTimeout(() => {
+          hiddenInput.blur();
+        }, 100);
+      }, 100);
     }
 
     signupBtn.addEventListener("click", () => {
       blurInputs();
-
       setTimeout(() => {
         verifyBtn.disabled = false;
         statusMessage.innerText = "After registering, click Verify to continue.";
@@ -200,7 +238,7 @@
       db.ref("registrations").push(userData)
         .then(() => {
           statusMessage.innerText = "✅ Details submitted successfully!";
-          window.location.href = "T&C.html";
+          window.location.href = "T&C.html"; // Redirect to Terms
         })
         .catch((error) => {
           console.error(error);
