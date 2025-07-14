@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - BloFin</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,7 +11,6 @@
       padding: 0;
       background-color: #07162a;
       color: #fff;
-      direction: ltr;
     }
 
     .container {
@@ -39,24 +37,17 @@
       margin: 0 0 10px;
     }
 
-    .video {
-      width: 100%;
-      border-radius: 12px;
-      margin: 10px 0;
-    }
-
     .signup-button {
       background-color: #002d7a;
       color: #4ea0ff;
       padding: 12px;
       border-radius: 8px;
-      text-align: center;
       font-weight: bold;
       display: block;
-      margin-top: 10px;
+      text-align: center;
+      width: 100%;
       cursor: pointer;
       border: none;
-      width: 100%;
     }
 
     .signup-button:hover {
@@ -70,11 +61,11 @@
       border-radius: 8px;
       font-weight: bold;
       text-align: center;
-      cursor: not-allowed;
       border: none;
       width: 100%;
       margin-top: 10px;
       opacity: 0.5;
+      cursor: not-allowed;
       pointer-events: none;
     }
 
@@ -94,15 +85,10 @@
     ul.steps-list li {
       margin-bottom: 8px;
     }
-
-    a {
-      text-decoration: none;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-
     <div class="section">
       <h2>📈 Trade with me on BloFin</h2>
       <p><strong>The first 1,000 users</strong> will get a <strong>$30 bonus</strong> when you deposit into your futures account!</p>
@@ -116,49 +102,54 @@
     <div class="section">
       <h2>Sign up to BloFin</h2>
       <p>Register using the button below to get your UID – you’ll need it in the next step to verify:</p>
-      <button class="signup-button" id="signupBtn">
-        👉 Sign Up to BloFin
-      </button>
+      <button class="signup-button" id="signupBtn">👉 Sign Up to BloFin</button>
     </div>
 
     <div class="section">
       <p>Already signed up? Click below 👇</p>
-      <button class="verify-button" id="verifyBtn" onclick="goToVerify()" disabled>
-        ✅ Verify UID
-      </button>
+      <button class="verify-button" id="verifyBtn" onclick="goToVerify()">✅ Verify UID</button>
     </div>
 
     <div class="section">
       <h2>📝 Next Steps After Verification</h2>
       <ul class="steps-list">
-        <li>🔐 Step 1: Enter your name, email, and phone (privately stored)</li>
-        <li>🧾 Step 2: Register with Axiom to access premium signals</li>
-        <li>📊 Step 3: Get added to our exclusive crypto group</li>
-        <li>🎯 Step 4: Start receiving signals and trading with the community</li>
-        <li>🎥 Step 5: Watch our short video tutorial for extra help</li>
+        <li>🔐 Step 1: Enter your name, email, and phone</li>
+        <li>🧾 Step 2: Register with Axiom to access signals</li>
+        <li>📊 Step 3: Get added to crypto group</li>
+        <li>🎯 Step 4: Start receiving signals</li>
+        <li>🎥 Step 5: Watch our short tutorial video</li>
       </ul>
     </div>
-
   </div>
 
   <script>
-    Telegram.WebApp.ready();
-
-    function goToVerify() {
-      window.location.href = "verify.html";
+    // Initialize Telegram WebApp (safe check)
+    if (typeof Telegram !== "undefined" && Telegram.WebApp) {
+      Telegram.WebApp.ready();
     }
 
     const signupBtn = document.getElementById("signupBtn");
     const verifyBtn = document.getElementById("verifyBtn");
 
     signupBtn.addEventListener("click", () => {
-      // ✅ Enable Verify Button
+      // ✅ Enable the verify button
       verifyBtn.classList.add("active");
       verifyBtn.disabled = false;
 
-      // ✅ Open BloFin in Telegram browser
-      Telegram.WebApp.openLink("https://blofin.com/invite/shabak?redirect=");
+      // ✅ Open BloFin link via Telegram WebApp (if inside Telegram)
+      if (typeof Telegram !== "undefined" && Telegram.WebApp && Telegram.WebApp.openLink) {
+        Telegram.WebApp.openLink("https://blofin.com/invite/shabak?redirect=");
+      } else {
+        // ✅ Open in new tab if in browser
+        window.open("https://blofin.com/invite/shabak?redirect=", "_blank");
+      }
     });
+
+    function goToVerify() {
+      if (!verifyBtn.disabled) {
+        window.location.href = "verify.html";
+      }
+    }
   </script>
 </body>
 </html>
