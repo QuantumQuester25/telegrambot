@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>הצטרפות ל-Gem Hunters</title>
+  <title>Join Gem Hunters</title>
 
   <style>
     body {
@@ -13,26 +13,27 @@
       background: url('https://ibb.co/Rwmb3GC') no-repeat center center fixed;
       background-size: cover;
       color: white;
-      direction: rtl;
     }
 
     .container {
       max-width: 400px;
       margin: 30px auto;
-      background: rgba(0, 16, 40, 0.96); /* Dark navy blue */
+      background: rgba(0, 16, 40, 0.96);
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
+    h1, h2, p, div, ul, li {
+      text-align: left;
+    }
+
     h1 {
       font-size: 24px;
-      text-align: center;
       margin-bottom: 10px;
     }
 
     p {
-      text-align: center;
       font-size: 14px;
       margin-bottom: 20px;
     }
@@ -43,44 +44,24 @@
       border-radius: 10px;
       margin-top: 15px;
       border: none;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .step-title {
       font-weight: bold;
       margin: 12px 0 4px;
       font-size: 16px;
-      border-radius: 8px;
     }
 
     ul {
-      padding: 0 20px;
-      list-style-type: decimal;
+      padding-left: 20px;
       margin-bottom: 20px;
     }
 
     li {
       margin-bottom: 10px;
-    }
-
-    form {
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      height: 40px;
-      border-radius: 12px;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      background-color: #001f3f; /* dark navy blue */
-      color: white;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-
-    input::placeholder {
-      color: #b0c4de; /* lighter blue placeholder */
     }
 
     button {
@@ -95,86 +76,47 @@
       cursor: pointer;
       margin-top: 10px;
     }
-
-    button:disabled {
-      background-color: gray;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>הצטרפות מהירה ל-Gem Hunters</h1>
-    <p>צפה בסרטון ולך לפי הצעדים כדי להתחיל</p>
+    <h1>Quick Signup for Shabak</h1>
+    <p>Watch the video and follow the steps to get started:</p>
 
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+    <!-- Embedded YouTube video -->
+    <iframe src="https://www.youtube.com/embed/bdWkdX1pRjA" allowfullscreen></iframe>
 
-    <h1>ברוכים הבאים ל-Shabak</h1>
+    <h1>Welcome to Shabak</h1>
 
-    <div class="step-title">שלב 1</div>
-    <div>הירשם ל-BloFin</div>
+    <!-- Step 1: Register button moved to top -->
+    <div class="step-title">Step 1</div>
+    <div>Click "Register" to continue</div>
+    <button onclick="goToRegister()">Register</button>
 
-    <form id="userForm">
-      <input type="text" id="fullName" placeholder="שם מלא" required />
-      <input type="email" id="email" placeholder="אימייל" required />
-      <input type="tel" id="phone" placeholder="מספר טלפון" required />
-      <button type="submit" id="continueBtn" disabled>המשך להרשמה</button>
-    </form>
+    <!-- Remaining steps -->
+    <div class="step-title">Step 2</div>
+    <div>Sign up on BloFin</div>
 
-    <div class="step-title">שלב 2</div>
-    <div>הירשם ל-Photon</div>
+    <div class="step-title">Step 3</div>
+    <div>Sign up on Axiom</div>
 
-    <h2>שלבים להצטרפות:</h2>
+    <div class="step-title">Step 4</div>
+    <div>Join our Telegram group</div>
+
+    <h2>How to Join:</h2>
     <ul>
-      <li>הירשם בבורסת BloFin וקבל בונוס של $30</li>
-      <li>שלח את מזהה המשתמש שלך לאימות</li>
-      <li>השלם הרשמה ל-Axiom</li>
-      <li>קבל גישה חינמית לקבוצת הטלגרם</li>
+      <li>Register on the BloFin exchange and get a $30 bonus</li>
+      <li>Send your user ID for verification</li>
+      <li>Complete registration with Axiom</li>
+      <li>Get free access to the Telegram group</li>
     </ul>
-
-    <div class="step-title">שלב 3</div>
-    <div>הצטרף לקבוצת הטלגרם שלנו</div>
-
-    <div class="step-title">שלב 4</div>
-    <div>לחץ על "הרשמה" כדי להמשיך</div>
-
-    <button onclick="goToRegister()">הרשמה</button>
-
-    <iframe src="https://www.youtube.com/embed/MUBhIG0XjNQ" allowfullscreen></iframe>
   </div>
 
   <script>
-    const fullName = document.getElementById("fullName");
-    const email = document.getElementById("email");
-    const phone = document.getElementById("phone");
-    const btn = document.getElementById("continueBtn");
-
-    function checkInputs() {
-      if (fullName.value && email.value && phone.value) {
-        btn.disabled = false;
-      } else {
-        btn.disabled = true;
-      }
-    }
-
-    fullName.addEventListener("input", checkInputs);
-    email.addEventListener("input", checkInputs);
-    phone.addEventListener("input", checkInputs);
-
-    document.getElementById("userForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      // Optional: Save data to localStorage
-      localStorage.setItem("fullName", fullName.value);
-      localStorage.setItem("email", email.value);
-      localStorage.setItem("phone", phone.value);
-      window.location.href = "register.html";
-    });
-
     function goToRegister() {
       window.location.href = "register.html";
     }
 
-    // Telegram WebApp ready
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
     }
