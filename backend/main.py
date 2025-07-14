@@ -1,7 +1,7 @@
 import os
 import asyncio
 from flask import Flask, request
-from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import Application, ApplicationBuilder, CommandHandler, ContextTypes
 from dotenv import load_dotenv
 
@@ -18,18 +18,14 @@ loop = asyncio.get_event_loop()
 
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# /start handler
+# /start handler (🚀 Launch App button removed)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("📬 /start command received!")
 
     try:
-        keyboard = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🚀 Open Gem Hunters", web_app=WebAppInfo(url="https://telegrambot-swart.vercel.app/"))]]
-        )
-        await update.message.reply_text("Welcome! Launch the Mini App:", reply_markup=keyboard)
+        await update.message.reply_text("Welcome!")
     except Exception as e:
         print(f"❌ Failed to send /start message: {e}")
-
 
 telegram_app.add_handler(CommandHandler("start", start))
 
@@ -39,22 +35,17 @@ def webhook():
     data = request.get_json(force=True)
     print("Webhook received data:", data)
     update = Update.de_json(data, telegram_app.bot)
-    # Run the async process_update in the current event loop:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(telegram_app.process_update(update))
     loop.close()
     return "ok", 200
 
-
-
-
 # Home route
 @app.route("/", methods=["GET"])
 def home():
     return "Bot is live!", 200
 
-# ✅ Set webhook during startup
 async def setup():
     print("🔄 Initializing Telegram bot + webhook")
     await telegram_app.initialize()
