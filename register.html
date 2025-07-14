@@ -79,9 +79,9 @@
     }
 
     .verify-button.active {
-      cursor: pointer;
       opacity: 1;
       pointer-events: auto;
+      cursor: pointer;
     }
 
     ul.steps-list {
@@ -152,12 +152,12 @@
     const verifyBtn = document.getElementById("verifyBtn");
 
     signupBtn.addEventListener("click", () => {
-      // ✅ Enable the verify button
+      // ✅ Enable Verify Button
       verifyBtn.classList.add("active");
       verifyBtn.disabled = false;
 
-      // ✅ Open BloFin signup in new tab
-      window.open("https://blofin.com/invite/shabak?redirect=", "_blank");
+      // ✅ Open BloFin in Telegram browser
+      Telegram.WebApp.openLink("https://blofin.com/invite/shabak?redirect=");
     });
   </script>
 </body>
