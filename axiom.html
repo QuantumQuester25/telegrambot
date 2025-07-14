@@ -4,7 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Axiom Registration</title>
+
+  <!-- ✅ Firebase SDKs (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCCJpwbaEjvcbfcMpJxFK93pr5eedcUQE0",
+      authDomain: "axiom-registration.firebaseapp.com",
+      databaseURL: "https://axiom-registration-default-rtdb.firebaseio.com",
+      projectId: "axiom-registration",
+      storageBucket: "axiom-registration.firebasestorage.app",
+      messagingSenderId: "890178803306",
+      appId: "1:890178803306:web:247abc8f2336ff63b85c13",
+      measurementId: "G-ENSED0C1TK"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
   <style>
+    /* (same CSS as you gave, unchanged) */
     body {
       margin: 0;
       padding: 0;
@@ -136,12 +158,11 @@
     <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
   </div>
 
+  <!-- ✅ Firebase Data Submission -->
   <script>
     const verifyBtn = document.getElementById("verifyBtn");
     const signupBtn = document.getElementById("signupBtn");
     const statusMessage = document.getElementById("statusMessage");
-
-    const sheetURL = "https://script.google.com/macros/s/AKfycbwqJ3k4ixW3FF0lNv9Izbepo0uVGriIEpdBgkbgT7J7nWqCbuDqadkWFrKUITilqpHa/exec";
 
     signupBtn.addEventListener("click", () => {
       setTimeout(() => {
@@ -160,27 +181,22 @@
         return;
       }
 
-      fetch(sheetURL, {
-        method: "POST",
-        body: JSON.stringify({ name, email, phone }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(res => res.text())
-      .then(response => {
-        if (response === "Success") {
+      const userData = {
+        name,
+        email,
+        phone,
+        timestamp: new Date().toISOString()
+      };
+
+      db.ref("registrations").push(userData)
+        .then(() => {
           statusMessage.innerText = "✅ Details submitted successfully!";
-        } else {
-          statusMessage.innerText = "⚠️ Something went wrong. Try again.";
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        statusMessage.innerText = "❌ Error submitting data.";
-      });
+        })
+        .catch((error) => {
+          console.error(error);
+          statusMessage.innerText = "❌ Error submitting data.";
+        });
     });
   </script>
-
 </body>
 </html>
