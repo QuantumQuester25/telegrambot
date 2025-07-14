@@ -39,7 +39,7 @@
 
     .video-wrapper {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      padding-bottom: 56.25%;
       padding-top: 25px;
       height: 0;
       overflow: hidden;
@@ -116,7 +116,7 @@
     </div>
   </div>
 
-  <!-- Existing Axiom Registration Form -->
+  <!-- Axiom Registration Form -->
   <div class="container">
     <h2>Register for Axiom</h2>
     <p>Please fill in your contact details and click the sign-up button:</p>
@@ -141,6 +141,8 @@
     const signupBtn = document.getElementById("signupBtn");
     const statusMessage = document.getElementById("statusMessage");
 
+    const sheetURL = "https://script.google.com/macros/s/AKfycbwqJ3k4ixW3FF0lNv9Izbepo0uVGriIEpdBgkbgT7J7nWqCbuDqadkWFrKUITilqpHa/exec";
+
     signupBtn.addEventListener("click", () => {
       setTimeout(() => {
         verifyBtn.disabled = false;
@@ -158,8 +160,27 @@
         return;
       }
 
-      statusMessage.innerText = "✅ Details saved. We'll manually check the registration.";
+      fetch(sheetURL, {
+        method: "POST",
+        body: JSON.stringify({ name, email, phone }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(res => res.text())
+      .then(response => {
+        if (response === "Success") {
+          statusMessage.innerText = "✅ Details submitted successfully!";
+        } else {
+          statusMessage.innerText = "⚠️ Something went wrong. Try again.";
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        statusMessage.innerText = "❌ Error submitting data.";
+      });
     });
   </script>
+
 </body>
 </html>
