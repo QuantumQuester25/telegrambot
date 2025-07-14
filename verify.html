@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify UID</title>
+  <title>אימות UID</title>
   <style>
     body {
       margin: 0;
@@ -34,6 +34,7 @@
       font-size: 1rem;
       background-color: #0b1d3a;
       color: #fff;
+      direction: ltr;
     }
     button {
       margin-top: 1rem;
@@ -68,33 +69,33 @@
 </head>
 <body>
   <div class="container">
-    <h2>Verify Your UID for BloFin</h2>
+    <h2>אימות UID שלך עבור BloFin</h2>
 
     <div id="input">
-      <p>Enter your BloFin UID and click "Verify":</p>
-      <input type="text" id="uid" placeholder="Enter your UID" />
-      <button id="submit-btn">Verify</button>
-      <button class="back-button" onclick="window.location.href='register.html'">🔙 Back</button>
+      <p>הכנס את ה-UID שלך ולחץ על "אמת":</p>
+      <input type="text" id="uid" placeholder="הכנס UID שלך כאן" />
+      <button id="submit-btn">אמת</button>
+      <button class="back-button" onclick="window.location.href='register.html'">🔙 חזרה</button>
     </div>
 
     <div id="verifying" class="status hidden">
-      Verifying your UID...
+      מאמת את ה-UID שלך...
     </div>
 
     <div id="error" class="status hidden">
       <p class="emoji">❌</p>
-      <p>We couldn't verify the UID you provided using ShabakBot's referral.</p>
+      <p>לא הצלחנו לאמת את ה-UID שלך דרך הקישור של שַׁבָּ"ק.</p>
       <p class="emoji">1️⃣</p>
-      <p>Make sure you signed up via ShabakBot's referral link.</p>
+      <p>וודא שנרשמת דרך הקישור של שַׁבָּ"ק בטלגרם.</p>
       <p class="emoji">2️⃣</p>
-      <p>Double-check that the UID you entered is correct – you can find it on your profile page in the app.</p>
+      <p>בדוק שה-UID שהזנת נכון – תוכל למצוא אותו בדף הפרופיל שלך באפליקציה.</p>
       <p class="emoji">❗</p>
-      <p>Once you're sure of your details, try submitting your UID again.</p>
-      <button id="retry-btn">Try Again</button>
+      <p>לאחר שבדקת את הפרטים, נסה להזין שוב את ה-UID.</p>
+      <button id="retry-btn">נסה שוב</button>
     </div>
 
     <div id="success" class="status hidden">
-      ✅ UID verified successfully! <br />Redirecting to Axiom page...
+      ✅ UID אומת בהצלחה! <br />מעביר לעמוד של Axiom...
     </div>
   </div>
 
