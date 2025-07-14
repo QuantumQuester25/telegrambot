@@ -5,62 +5,62 @@ from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMar
 from telegram.ext import Application, ApplicationBuilder, CommandHandler, ContextTypes
 from dotenv import load_dotenv
 
-# Load .env variables
+# טוען משתני סביבה
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Must be like: https://yourdomain.com/webhook
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # חייב להיות כמו: https://yourdomain.com/webhook
 
 if not BOT_TOKEN or not WEBHOOK_URL:
-    raise RuntimeError("BOT_TOKEN or WEBHOOK_URL not set in environment.")
+    raise RuntimeError("BOT_TOKEN או WEBHOOK_URL לא הוגדרו בקובץ .env")
 
-# Flask app init
+# אתחול אפליקציית Flask
 app = Flask(__name__)
 
-# Telegram Application
+# אתחול בוט Telegram
 telegram_app: Application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# ✅ /start handler with message + button
+# ✅ מטפל בפקודת /start עם הודעה וכפתור
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("📬 /start command received!")
+    print("📬 פקודת /start התקבלה!")
 
     try:
-        # Hebrew instructions
+        # טקסט הוראות בעברית
         message_text = (
-            'לכניסה לערוץ ש"בכ – קריפטו יש להשלים את השלבים הבאים:\n\n'
-            '1. להזין שם, אימייל, טלפון (מאובטח באופן פרטי)\n\n'
-            '2. להירשם עם Blofin כדי להיכנס לאיתותים שלי ולסחור איתנו\n\n'
-            '3. להירשם עם Axiom כדי להיכנס לאיתותים שלי ולסחור איתנו\n\n'
-            '4. להיכנס\n\n'
-            '📺 צפה במדריך: https://youtu.be/bdWkdX1pRjA'
+            'כדי להיכנס לערוץ ש"בכ – קריפטו, יש להשלים את השלבים הבאים:\n\n'
+            '1. הזן שם, אימייל וטלפון (באופן פרטי ומאובטח)\n\n'
+            '2. הירשם ל-Blofin כדי לקבל גישה לאיתותים שלי ולסחור איתנו\n\n'
+            '3. הירשם ל-Axiom כדי לקבל גישה לאיתותים שלי ולסחור איתנו\n\n'
+            '4. לחץ על כפתור הכניסה למטה\n\n'
+            '📺 מדריך וידאו: https://youtu.be/bdWkdX1pRjA'
         )
 
-        # Step message
+        # שליחת ההודעה עם ההוראות
         await update.message.reply_text(message_text)
 
-        # WebApp button
+        # מקלדת עם כפתור Web App
         keyboard = InlineKeyboardMarkup(
             [[
                 InlineKeyboardButton(
-                    "🚀 Open Gem Hunters",
+                    "🚀 פתח את אפליקציית Gem Hunters",
                     web_app=WebAppInfo(url="https://telegrambot-swart.vercel.app/")
                 )
             ]]
         )
 
-        await update.message.reply_text("👇 Launch the Mini App below:", reply_markup=keyboard)
+        await update.message.reply_text("👇 הפעל את המיני-אפליקציה כאן:", reply_markup=keyboard)
 
     except Exception as e:
-        print(f"❌ Error sending /start message: {e}")
+        print(f"❌ שגיאה בשליחת הודעת /start: {e}")
 
-# Add handler
+# הוספת המטפל ל-Application
 telegram_app.add_handler(CommandHandler("start", start))
 
-# ✅ Webhook route — with required event loop setup
+# ✅ נקודת Webhook — כולל לולאת אירועים
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.get_json(force=True)
-    print("Webhook received data:", data)
+    print("Webhook קיבל נתונים:", data)
     update = Update.de_json(data, telegram_app.bot)
 
     loop = asyncio.new_event_loop()
@@ -74,22 +74,22 @@ def webhook():
 
     return "ok", 200
 
-# ✅ Home route
+# ✅ דף בית לבדיקת פעילות
 @app.route("/", methods=["GET"])
 def home():
-    return "Bot is live!", 200
+    return "הבוט פעיל!", 200
 
-# ✅ Set webhook on startup
+# ✅ הגדרת Webhook בעת ההפעלה
 async def setup():
-    print("🔧 Initializing bot and setting webhook...")
+    print("🔧 מאתחל את הבוט ומגדיר Webhook...")
     await telegram_app.initialize()
     await telegram_app.bot.set_webhook(WEBHOOK_URL)
-    print("✅ Bot initialized & webhook set.")
+    print("✅ הבוט מאותחל ו-Webhook מוגדר.")
 
-# Run setup before Flask starts
+# הפעלת ההגדרות לפני שה-Flask מתחיל
 loop = asyncio.get_event_loop()
 loop.run_until_complete(setup())
 
-# ✅ Flask entrypoint
+# ✅ נקודת הכניסה של Flask
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
