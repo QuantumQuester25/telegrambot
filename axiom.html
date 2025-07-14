@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Axiom Registration</title>
 
-  <!-- ✅ Firebase SDKs (Compat) -->
+  <!-- Firebase SDKs (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -26,7 +26,6 @@
   </script>
 
   <style>
-    /* (same CSS as you gave, unchanged) */
     body {
       margin: 0;
       padding: 0;
@@ -51,7 +50,6 @@
       max-width: 420px;
       width: 90%;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-      text-align: center;
     }
 
     .blofin-box h2 {
@@ -62,7 +60,6 @@
     .video-wrapper {
       position: relative;
       padding-bottom: 56.25%;
-      padding-top: 25px;
       height: 0;
       overflow: hidden;
       border-radius: 12px;
@@ -75,6 +72,7 @@
       width: 100%;
       height: 100%;
       border-radius: 12px;
+      border: none;
     }
 
     .container {
@@ -132,9 +130,7 @@
     <h2>How to Register on BloFin</h2>
     <div class="video-wrapper">
       <iframe src="https://www.youtube.com/embed/bdWkdX1pRjA"
-              title="How to Register on BloFin" frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+              title="How to Register on BloFin" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -158,7 +154,6 @@
     <button class="back-button" onclick="window.location.href='register.html'">← Back</button>
   </div>
 
-  <!-- ✅ Firebase Data Submission -->
   <script>
     const verifyBtn = document.getElementById("verifyBtn");
     const signupBtn = document.getElementById("signupBtn");
@@ -191,6 +186,7 @@
       db.ref("registrations").push(userData)
         .then(() => {
           statusMessage.innerText = "✅ Details submitted successfully!";
+          window.location.href = "T&C.html";  // ✅ Redirect to Terms page
         })
         .catch((error) => {
           console.error(error);
@@ -198,5 +194,6 @@
         });
     });
   </script>
+
 </body>
 </html>
