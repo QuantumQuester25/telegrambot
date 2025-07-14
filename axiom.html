@@ -158,8 +158,20 @@
     const verifyBtn = document.getElementById("verifyBtn");
     const signupBtn = document.getElementById("signupBtn");
     const statusMessage = document.getElementById("statusMessage");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+
+    // ✅ Blur inputs to hide keyboard
+    function blurInputs() {
+      nameInput.blur();
+      emailInput.blur();
+      phoneInput.blur();
+    }
 
     signupBtn.addEventListener("click", () => {
+      blurInputs();
+
       setTimeout(() => {
         verifyBtn.disabled = false;
         statusMessage.innerText = "After registering, click Verify to continue.";
@@ -167,9 +179,11 @@
     });
 
     verifyBtn.addEventListener("click", () => {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
+      blurInputs();
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const phone = phoneInput.value.trim();
 
       if (!name || !email || !phone) {
         statusMessage.innerText = "Please fill in all details before verification.";
@@ -186,7 +200,7 @@
       db.ref("registrations").push(userData)
         .then(() => {
           statusMessage.innerText = "✅ Details submitted successfully!";
-          window.location.href = "T&C.html";  // ✅ Redirect to Terms page
+          window.location.href = "T&C.html";
         })
         .catch((error) => {
           console.error(error);
